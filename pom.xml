@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.pretronic.dksupport</groupId>
+    <artifactId>DKSupport</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0.0-SNAPSHOT</version>
+    <modules>
+        <module>dksupport-api</module>
+        <module>dksupport-common</module>
+        <module>dksupport-minecraft</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+
+        <dependency.net.pretronic.libraries>1.2.85.225-SNAPSHOT</dependency.net.pretronic.libraries>
+        <dependency.net.pretronic.databasequery>1.2.38.65-SNAPSHOT</dependency.net.pretronic.databasequery>
+
+        <dependency.mcnative.api>1.2.25.83-SNAPSHOT</dependency.mcnative.api>
+        <dependency.mcnative.runtime>1.10.25.92-SNAPSHOT</dependency.mcnative.runtime>
+        <dependency.mcnative.licensing>1.0.5.8-SNAPSHOT</dependency.mcnative.licensing>
+        <dependency.mcnative.buildtool>1.0.8.15-SNAPSHOT</dependency.mcnative.buildtool>
+        <dependency.mcnative.loader>1.7.75.53</dependency.mcnative.loader>
+
+        <jetbrains.annotation>20.1.0</jetbrains.annotation>
+
+        <plugin.compiler>3.8.1</plugin.compiler>
+        <plugin.source>3.2.1</plugin.source>
+        <plugin.maven.shade>3.2.2</plugin.maven.shade>
+        <plugin.maven.deploy>3.0.0-M1</plugin.maven.deploy>
+    </properties>
+
+</project>
