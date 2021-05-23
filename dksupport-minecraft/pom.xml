@@ -36,13 +36,13 @@
 
                     <manifest>
                         <installMcNative>true</installMcNative>
-                        <name>DKMotd</name>
-                        <id>fcfd556c-f1c6-4443-86ed-0f57767fee8b</id>
+                        <name>DKSupport</name>
+                        <id>a120140d-bbdf-11eb-8ba0-0242ac180002</id>
                         <version>${project.version}</version>
-                        <main>net.pretronic.dkmotd.minecraft.DKMotdPlugin</main>
+                        <main>net.pretronic.dksupport.minecraft.DKSupport</main>
                         <website>https://pretronic.net</website>
                         <author>Pretronic</author>
-                        <messageModule>DKMotd</messageModule>
+                        <messageModule>DKSupport</messageModule>
                     </manifest>
                 </configuration>
             </plugin>

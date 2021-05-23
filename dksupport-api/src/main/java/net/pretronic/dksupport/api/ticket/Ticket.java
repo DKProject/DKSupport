@@ -30,7 +30,11 @@ public interface Ticket {
 
     TicketParticipant getParticipant(@NotNull DKSupportPlayer player);
 
+    TicketParticipant addParticipant(@NotNull DKSupportPlayer player);
+
     TicketParticipant addParticipant(@NotNull DKSupportPlayer player, boolean hidden);
+
+    boolean removeParticipant(@NotNull DKSupportPlayer player);
 
     boolean removeParticipant(@NotNull TicketParticipant participant);
 
@@ -44,7 +48,7 @@ public interface Ticket {
 
 
     boolean take(@NotNull DKSupportPlayer stuff);
-    
+
 
     TicketMessage sendMessage(@NotNull TicketParticipant sender, @NotNull String message);
 }
