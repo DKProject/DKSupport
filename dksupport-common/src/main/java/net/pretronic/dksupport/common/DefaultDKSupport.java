@@ -5,6 +5,7 @@ import net.pretronic.dksupport.api.DKSupport;
 import net.pretronic.dksupport.api.player.DKSupportPlayerManager;
 import net.pretronic.dksupport.api.ticket.TicketManager;
 import net.pretronic.dksupport.common.player.DefaultDKSupportPlayerManager;
+import net.pretronic.dksupport.common.ticket.DefaultTicketManager;
 import net.pretronic.libraries.event.EventBus;
 import net.pretronic.libraries.utility.annonations.Internal;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +22,7 @@ public class DefaultDKSupport implements DKSupport {
         this.eventBus = eventBus;
         this.storage = new DKSupportStorage(database);
 
-        this.ticketManager = null;
+        this.ticketManager = new DefaultTicketManager(this);
         this.playerManager = new DefaultDKSupportPlayerManager(this);
     }
 

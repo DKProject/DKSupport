@@ -1,14 +1,20 @@
 package net.pretronic.dksupport.api.ticket;
 
+import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import org.jetbrains.annotations.NotNull;
 
 public interface TicketMessage {
 
     @NotNull
-    TicketParticipant getSender();
+    Ticket getTicket();
 
     @NotNull
-    String getMessage();
+    DKSupportPlayer getSender();
+
+    TicketParticipant getSenderAsParticipant();
+
+    @NotNull
+    String getText();
 
     long getTime();
 }

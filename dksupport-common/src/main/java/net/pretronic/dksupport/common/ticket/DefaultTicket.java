@@ -1,33 +1,47 @@
 package net.pretronic.dksupport.common.ticket;
 
+import net.pretronic.dksupport.api.event.ticket.TicketTakeEvent;
+import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantAddEvent;
+import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantMessageEvent;
+import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantRemoveEvent;
 import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import net.pretronic.dksupport.api.ticket.Ticket;
 import net.pretronic.dksupport.api.ticket.TicketMessage;
 import net.pretronic.dksupport.api.ticket.TicketParticipant;
 import net.pretronic.dksupport.api.ticket.TicketState;
+import net.pretronic.dksupport.common.DefaultDKSupport;
+import net.pretronic.dksupport.common.event.ticket.DefaultTicketTakeEvent;
+import net.pretronic.dksupport.common.event.ticket.participant.DefaultTicketParticipantAddEvent;
+import net.pretronic.dksupport.common.event.ticket.participant.DefaultTicketParticipantMessageEvent;
+import net.pretronic.dksupport.common.event.ticket.participant.DefaultTicketParticipantRemoveEvent;
 import net.pretronic.libraries.utility.Iterators;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class DefaultTicket implements Ticket {
+
+    private final DefaultDKSupport dkSupport;
 
     private final UUID id;
     private String category;
     private TicketState state;
-    private final Collection<TicketParticipant> participants;
-    private final List<TicketMessage> messages;
+    private Collection<TicketParticipant> participants;
+    private List<TicketMessage> messages;
+    private final long created;
+    private final UUID creatorId;
 
-    public DefaultTicket(@NotNull UUID id, @NotNull String category, @NotNull TicketState state, @NotNull Collection<TicketParticipant> participants,
-                         @NotNull List<TicketMessage> messages) {
+    public DefaultTicket(@NotNull DefaultDKSupport dkSupport, UUID creatorId) {
+        this(dkSupport, UUID.randomUUID(), null, TicketState.OPEN, System.currentTimeMillis(), creatorId);
+    }
+
+    public DefaultTicket(@NotNull DefaultDKSupport dkSupport, @NotNull UUID id, String category, @NotNull TicketState state, long created, UUID creatorId) {
+        this.dkSupport = dkSupport;
         this.id = id;
         this.category = category;
         this.state = state;
-        this.participants = participants;
-        this.messages = messages;
+        this.created = created;
+        this.creatorId = creatorId;
     }
 
     @Override
@@ -36,13 +50,28 @@ public class DefaultTicket implements Ticket {
     }
 
     @Override
-    public @NotNull String getCategory() {
+    public long getCreated() {
+        return this.created;
+    }
+
+    @Override
+    public TicketParticipant getCreator() {
+        return getParticipant(this.creatorId);
+    }
+
+    @Override
+    public String getCategory() {
         return this.category;
     }
 
     @Override
-    public void setCategory(@NotNull String category) {
+    public boolean setCategory(@NotNull String category) {
         this.category = category;
+        this.dkSupport.getStorage().getTickets().update()
+                .set("Category", category)
+                .where("Id", getId())
+                .execute();
+        return true;//@Todo event
     }
 
     @Override
@@ -53,54 +82,160 @@ public class DefaultTicket implements Ticket {
     @Override
     public boolean setState(@NotNull TicketState state) {
         this.state = state;
-        return true;
+        this.dkSupport.getStorage().getTickets().update()
+                .set("State", state)
+                .where("Id", getId())
+                .execute();
+        return true;//@Todo event
     }
 
     @Override
     public @NotNull Collection<TicketParticipant> getParticipants() {
-        return Collections.unmodifiableCollection(this.participants);
+        return Collections.unmodifiableCollection(getParticipantsOrLoad());
     }
 
     @Override
     public TicketParticipant getParticipant(@NotNull DKSupportPlayer player) {
-        return Iterators.findOne(this.participants, participant -> participant.getPlayer().equals(player));
+        return Iterators.findOne(getParticipantsOrLoad(), participant -> participant.getPlayer().equals(player));
     }
 
     @Override
-    public TicketParticipant addParticipant(@NotNull DKSupportPlayer player, boolean hidden) {
+    public TicketParticipant getParticipant(@NotNull UUID playerId) {
+        return Iterators.findOne(getParticipantsOrLoad(), participant -> participant.getPlayer().getId().equals(playerId));
+    }
+
+    @Override
+    public TicketParticipant addParticipant(@NotNull DKSupportPlayer player) {
+        return addParticipant(player, false, true);
+    }
+
+    @Override
+    public TicketParticipant addParticipant(@NotNull DKSupportPlayer player, boolean hidden, boolean receiveMessages) {
         if(getParticipant(player) != null) return null;
-        TicketParticipant participant = new DefaultTicketParticipant(player, hidden, System.currentTimeMillis());
-        this.participants.add(participant);
+        TicketParticipant participant = new DefaultTicketParticipant(this, player, hidden,
+                System.currentTimeMillis(), receiveMessages);
+
+        TicketParticipantAddEvent event = new DefaultTicketParticipantAddEvent(this, participant);
+        this.dkSupport.getEventBus().callEvent(TicketParticipantAddEvent.class, event);
+        if(event.isCancelled()) return null;
+
+        this.dkSupport.getStorage().getTicketParticipants().insert()
+                .set("TicketId", getId())
+                .set("PlayerId", participant.getPlayer().getId())
+                .set("Hidden", participant.isHidden())
+                .set("Joined", participant.getJoined())
+                .set("ReceiveMessages", participant.receiveMessages())
+                .execute();
+
+        getParticipantsOrLoad().add(participant);
         return participant;
     }
 
     @Override
+    public TicketParticipant removeParticipant(@NotNull DKSupportPlayer player) {
+        TicketParticipant participant = getParticipant(player);
+        if(participant == null) throw new IllegalArgumentException("Can't remove player " + player.getId() + " from ticket " + getId() + ". He is not member of this ticket");
+        if(removeParticipant(participant)) return participant;
+        return null;
+    }
+
+    @Override
     public boolean removeParticipant(@NotNull TicketParticipant participant) {
-        return false;
+        if(!participant.getTicket().equals(this)) {
+            throw new IllegalArgumentException("Ticket participant("+ participant.getPlayer().getId() +","+participant.getTicket().getId()
+                    +") is not a participant of ticket " + getId());
+        }
+
+        TicketParticipantRemoveEvent event = new DefaultTicketParticipantRemoveEvent(this, participant);
+        this.dkSupport.getEventBus().callEvent(TicketParticipantRemoveEvent.class, event);
+        if(event.isCancelled()) return false;
+
+        this.dkSupport.getStorage().getTicketParticipants().delete()
+                .where("PlayerId", participant.getPlayer().getId())
+                .where("TicketId", getId())
+                .execute();
+
+        return getParticipantsOrLoad().remove(participant);
     }
 
     @Override
     public boolean isParticipant(@NotNull DKSupportPlayer player) {
-        return false;
+        return getParticipant(player) != null;
+    }
+
+    @Override
+    public boolean isParticipant(@NotNull UUID playerId) {
+        return getParticipant(playerId) != null;
     }
 
     @Override
     public TicketMessage getLastMessage() {
-        return null;
+        TicketMessage message = null;
+        for (TicketMessage ticketMessage : getMessagesOrLoad()) {
+            if(message == null || message.getTime() < ticketMessage.getTime()) {
+                message = ticketMessage;
+            }
+        }
+        return message;
     }
 
     @Override
     public @NotNull List<TicketMessage> getMessages() {
-        return Collections.unmodifiableList(this.messages);
+        return Collections.unmodifiableList(getMessagesOrLoad());
     }
 
     @Override
-    public boolean take(@NotNull DKSupportPlayer stuff) {
-        return false;
+    public TicketParticipant take(@NotNull DKSupportPlayer staff) {
+        if(this.state != TicketState.OPEN) {
+            throw new IllegalArgumentException("Can't take ticket in state " + getState());
+        }
+        TicketTakeEvent event = new DefaultTicketTakeEvent(this, staff);
+        this.dkSupport.getEventBus().callEvent(TicketTakeEvent.class, event);
+        if(event.isCancelled()) return null;
+        setState(TicketState.PROCESSING);
+        return addParticipant(staff);
     }
 
     @Override
     public TicketMessage sendMessage(@NotNull TicketParticipant sender, @NotNull String message) {
-        return null;
+        if(!sender.getTicket().equals(this)) {
+            throw new IllegalArgumentException("Ticket participant("+ sender.getPlayer().getId() +","+sender.getTicket().getId()
+                    +") is not a participant of ticket " + getId());
+        }
+        TicketMessage ticketMessage = new DefaultTicketMessage(this, sender.getPlayer(), message, System.currentTimeMillis());
+        TicketParticipantMessageEvent event = new DefaultTicketParticipantMessageEvent(this, sender, ticketMessage);
+        this.dkSupport.getEventBus().callEvent(TicketParticipantMessageEvent.class, event);
+        return ticketMessage;
+    }
+
+    private Collection<TicketParticipant> getParticipantsOrLoad() {
+        if(this.participants == null) {
+            this.participants = new ArrayList<>();
+            this.dkSupport.getStorage().getTicketParticipants().find()
+                    .where("TicketId", getId())
+                    .execute().loadIn(this.participants, resultEntry -> {
+                        UUID playerId = resultEntry.getUniqueId("PlayerId");
+                        DKSupportPlayer player = this.dkSupport.getPlayerManager().getPlayer(playerId);
+                        return new DefaultTicketParticipant(this, player,
+                                resultEntry.getBoolean("Hidden"),
+                                resultEntry.getLong("Joined"),
+                                resultEntry.getBoolean("ReceiveMessages"));
+            });
+        }
+        return this.participants;
+    }
+
+    private List<TicketMessage> getMessagesOrLoad() {
+        if(this.messages == null) {
+            this.messages = new ArrayList<>();
+            this.dkSupport.getStorage().getTicketMessages().find()
+                    .join(this.dkSupport.getStorage().getTicketParticipants()).on("SenderId", "Id")
+                    .where("TicketId", getId())
+                    .execute().loadIn(this.messages,  resultEntry -> new DefaultTicketMessage(this,
+                    this.dkSupport.getPlayerManager().getPlayer(resultEntry.getUniqueId("SenderId")),
+                    resultEntry.getString("Message"),
+                    resultEntry.getLong("Time")));
+        }
+        return this.messages;
     }
 }

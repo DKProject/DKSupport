@@ -39,7 +39,7 @@
                         <name>DKSupport</name>
                         <id>a120140d-bbdf-11eb-8ba0-0242ac180002</id>
                         <version>${project.version}</version>
-                        <main>net.pretronic.dksupport.minecraft.DKSupport</main>
+                        <main>net.pretronic.dksupport.minecraft.DKSupportPlugin</main>
                         <website>https://pretronic.net</website>
                         <author>Pretronic</author>
                         <messageModule>DKSupport</messageModule>
@@ -96,7 +96,7 @@
                 </executions>
                 <configuration>
                     <notNull>
-                        <param>net.pretronic.libraries.utility.annonations.NotNull</param>
+                        <param>org.jetbrains.annotations.NotNull</param>
                     </notNull>
                 </configuration>
             </plugin>

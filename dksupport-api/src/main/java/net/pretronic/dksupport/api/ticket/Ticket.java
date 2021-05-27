@@ -13,10 +13,15 @@ public interface Ticket {
     UUID getId();
 
 
-    @NotNull
+    long getCreated();
+
+
+    TicketParticipant getCreator();
+
+
     String getCategory();
 
-    void setCategory(@NotNull String category);
+    boolean setCategory(@NotNull String category);
 
 
     @NotNull
@@ -30,15 +35,19 @@ public interface Ticket {
 
     TicketParticipant getParticipant(@NotNull DKSupportPlayer player);
 
+    TicketParticipant getParticipant(@NotNull UUID playerId);
+
     TicketParticipant addParticipant(@NotNull DKSupportPlayer player);
 
-    TicketParticipant addParticipant(@NotNull DKSupportPlayer player, boolean hidden);
+    TicketParticipant addParticipant(@NotNull DKSupportPlayer player, boolean hidden, boolean receiveMessages);
 
-    boolean removeParticipant(@NotNull DKSupportPlayer player);
+    TicketParticipant removeParticipant(@NotNull DKSupportPlayer player);
 
     boolean removeParticipant(@NotNull TicketParticipant participant);
 
     boolean isParticipant(@NotNull DKSupportPlayer player);
+
+    boolean isParticipant(@NotNull UUID playerId);
 
 
     TicketMessage getLastMessage();
@@ -47,7 +56,7 @@ public interface Ticket {
     List<TicketMessage> getMessages();
 
 
-    boolean take(@NotNull DKSupportPlayer stuff);
+    TicketParticipant take(@NotNull DKSupportPlayer staff);
 
 
     TicketMessage sendMessage(@NotNull TicketParticipant sender, @NotNull String message);

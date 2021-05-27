@@ -6,45 +6,44 @@ import net.pretronic.dksupport.api.ticket.Ticket;
 import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.minecraft.PlayerSettingsKey;
 import net.pretronic.dksupport.minecraft.commands.CommandUtil;
-import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.dksupport.minecraft.config.Messages;
+import net.pretronic.dksupport.minecraft.config.Permissions;
 import net.pretronic.libraries.command.command.BasicCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import org.mcnative.runtime.api.player.MinecraftPlayer;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
 import java.util.UUID;
 
-public class TicketTakeCommand extends BasicCommand {
+public class TicketSelectCommand extends BasicCommand {
 
-    private final DKSupport dksupport;
+    private final DKSupport dkSupport;
 
-    public TicketTakeCommand(ObjectOwner owner, DKSupport dksupport) {
-        super(owner, CommandConfiguration.newBuilder().name("take").permission(DKSupportConfig.PERMISSION_STAFF).create());
-        this.dksupport = dksupport;
+    public TicketSelectCommand(ObjectOwner owner, DKSupport dkSupport) {
+        super(owner, CommandConfiguration.newBuilder().name("select").permission(Permissions.STAFF).create());
+        this.dkSupport = dkSupport;
     }
 
     @Override
-    public void execute(CommandSender sender, String[] arguments) {
+    public void execute(CommandSender sender, String[] args) {
         if(CommandUtil.isConsole(sender)) return;
-        Ticket ticket = dksupport.getTicketManager().getTicket(UUID.fromString(arguments[0]));
+        Ticket ticket = dkSupport.getTicketManager().getTicket(UUID.fromString(args[0]));
 
         if(ticket == null){
             sender.sendMessage(Messages.ERROR_TICKET_NOTFOUND);
             return;
         }
-
-        if(ticket.getState() != TicketState.OPEN){
-            sender.sendMessage(Messages.ERROR_TICKET_NOT_OPEN);
+        if(ticket.getState() != TicketState.PROCESSING){
+            sender.sendMessage(Messages.ERROR_TICKET_NOT_PROCESSING);
             return;
         }
 
-        if(ticket.take(((OnlineMinecraftPlayer) sender).getAs(DKSupportPlayer.class)) != null){
-            ((MinecraftPlayer)sender).setSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED, ticket.getId());
-            sender.sendMessage(Messages.COMMAND_TICKET_TAKE, VariableSet.create().addDescribed("ticket", ticket));
-        }
+        OnlineMinecraftPlayer player = (OnlineMinecraftPlayer) sender;
+
+        ticket.addParticipant(player.getAs(DKSupportPlayer.class));
+        player.setSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED, ticket.getId());
+        player.sendMessage(Messages.COMMAND_TICKET_SELECT, VariableSet.create().addDescribed("ticket", ticket));
     }
 }

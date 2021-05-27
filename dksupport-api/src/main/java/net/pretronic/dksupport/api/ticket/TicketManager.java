@@ -8,12 +8,15 @@ import java.util.UUID;
 
 public interface TicketManager {
 
-    @NotNull
-    Collection<Ticket> getTickets();
-
     Ticket getTicket(UUID id);
 
-    Ticket createTicket(@NotNull DKSupportPlayer player);
+    @NotNull
+    Collection<Ticket> getTickets(@NotNull TicketState state);
+
+    Ticket getOpenTicketForCreator(DKSupportPlayer player);
+
+
+    Ticket createTicket(@NotNull DKSupportPlayer creator);
 
     boolean deleteTicket(@NotNull Ticket ticket);
 }

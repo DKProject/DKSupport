@@ -1,0 +1,56 @@
+meta:
+  name: 'DKSupport English'
+  module: 'DKSupport'
+  language:
+    name: 'English'
+    localizedName: 'English'
+    code: 'en'
+messages:
+  dksupport.prefix: '&8» &eDKSupport &8|&f'
+  dksupport.prefix.ticket: '&8» &bTicket &e{ticket.creator.player.displayName} &7by &e{sender.player.displayName} &8|&f'
+
+  dksupport.error.ticket.notFound: '${dksupport.prefix} &cTicket &e{id} &cnot found'
+  dksupport.error.uuid.notValid: '${dksupport.prefix} &e{value} is not a valid uuid'
+  dksupport.error.alreadyOpenTicket: '${dksupport.prefix} &cYou have already an open ticket'
+  dksupport.error.ticket.notOpen: '${dksupport.prefix} &cThis ticket is not open anymore'
+  dksupport.error.ticket.notProcessing: '${dksupport.prefix} &cThis ticket is not in processing anymore'
+  dksupport.error.participant.not: '${dksupport.prefix} {player.displayName} &7is not member of this ticket'
+  dksupport.error.ticket.notSelected: '${dksupport.prefix} &cYou have no ticket selected'
+  dksupport.error.player.notFound: '${dksupport.prefix} &cPlayer &e{name} &cnot found'
+  dksupport.error.participant.already: '${dksupport.prefix} &e{participant.player.displayName} &cis already a participant of this ticket'
+
+  dksupport.player.staff.status.now: '${dksupport.prefix} &7You are currently {statusFormatted}'
+  dksupport.player.staff.status.already: '${dksupport.prefix} &cYou are already {statusFormatted}'
+  dksupport.player.staff.status.change: '${dksupport.prefix} &7You are now {statusFormatted}'
+  dksupport.player.staff.status.login: '&aLogin'
+  dksupport.player.staff.status.logout: '&cLogout'
+  dksupport.ticket.create.staff: '${dksupport.prefix} &e{ticket.creator.player.displayName} &7has opened a ticket with category &e{ticket.category}
+  ${dksupport.prefix} !["&8[&aTake&8]"]("run:///ticket take {ticket.id}")'
+  dksupport.ticket.message.received: '${dksupport.prefix.ticket} {message.text}'
+
+  dksupport.command.ticket.help.user: '${dksupport.prefix} &cInvalid usage of ticket command&8:
+  &7/ticket <category>'
+  dksupport.command.ticket.help.staff: '${dksupport.prefix} &cInvalid usage of ticket command&8:
+  &7/ticket <category>'
+
+  dksupport.command.ticket.create: '${dksupport.prefix} &7You have open a ticket for &e{ticket.category}'
+
+  dksupport.command.ticket.list: '${dksupport.prefix} &7Open tickets @for("ticket" in {tickets}, ${dksupport.command.ticket.list.loop},"\n", "\n")'
+  dksupport.command.ticket.list.loop: '&8- &e{ticket.category} &7by &e{ticket.creator.player.displayName}'
+
+  dksupport.command.ticket.take: '${dksupport.prefix} &7You have taken the ticket of &e{ticket.creator.player.displayName}'
+  dksupport.command.ticket.select: '${dksupport.prefix} &7You have selected the ticket of &e{ticket.creator.player.displayName}'
+
+  dksupport.command.ticket.my: '${dksupport.prefix} &7My staff tickets @for("ticket" in {player.myTickets}, ${dksupport.command.ticket.my.loop},"\n", "\n")'
+  dksupport.command.ticket.my.loop: '&8- &e{ticket.category} &7by &e{ticket.creator.player.displayName}'
+
+  dksupport.command.ticket.close: '${dksupport.prefix} &7You have closed the ticket'
+  dksupport.command.ticket.leave: '${dksupport.prefix} &7You have left the ticket'
+  dksupport.command.ticket.add: '${dksupport.prefix} &7You have added the player &e{participant.player.displayName} &7to this ticket'
+  dksupport.command.ticket.remove: '${dksupport.prefix} &7You have removed the player &e{participant.player.displayName} &7from this ticket'
+  dksupport.command.ticket.info: '${dksupport.prefix} &7Ticket info
+  &7Creator&8: {ticket.creator.player.displayName}
+  &7Category&8: &e{ticket.category}
+  &7State&8: &e{ticket.state}
+  &7Particpant&8: @for("participant" in {participants}, ${dksupport.command.ticket.info.loop},"\n", "\n")'
+  dksupport.command.ticket.info.loop: '&8- {participant.player.displayName}'

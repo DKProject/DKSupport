@@ -26,13 +26,25 @@
         <dependency>
             <groupId>net.pretronic.libraries</groupId>
             <artifactId>pretroniclibraries-event</artifactId>
-            <version>${dependency.net.pretronic.libraries}</version>
+            <version>${dependency.pretronic.libraries}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.pretronic.libraries</groupId>
+            <artifactId>pretroniclibraries-caching</artifactId>
+            <version>${dependency.pretronic.libraries}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.pretronic.libraries</groupId>
+            <artifactId>pretroniclibraries-document</artifactId>
+            <version>${dependency.pretronic.libraries}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.pretronic.databasequery</groupId>
             <artifactId>pretronicdatabasequery-api</artifactId>
-            <version>${dependency.net.pretronic.databasequery}</version>
+            <version>${dependency.pretronic.databasequery}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -18,12 +18,12 @@ import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.Setting;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 
-public class TicketAddCommand extends BasicCommand {
+public class TicketRemoveCommand extends BasicCommand {
 
     private final DKSupport dksupport;
 
-    public TicketAddCommand(ObjectOwner owner, DKSupport dksupport) {
-        super(owner, CommandConfiguration.newBuilder().name("add").permission(DKSupportConfig.PERMISSION_STAFF).create());
+    public TicketRemoveCommand(ObjectOwner owner, DKSupport dksupport) {
+        super(owner, CommandConfiguration.newBuilder().name("remove").permission(DKSupportConfig.PERMISSION_STAFF).create());
         this.dksupport = dksupport;
     }
 
@@ -54,14 +54,14 @@ public class TicketAddCommand extends BasicCommand {
 
         TicketParticipant participant = ticket.getParticipant(targetSupportPlayer);
         if(participant != null){
-            sender.sendMessage(Messages.ERROR_PARTICIPANT_ALREADY, VariableSet.create()
+            sender.sendMessage(Messages.ERROR_PARTICIPANT_NOT, VariableSet.create()
                     .addDescribed("participant", participant));
             return;
         }
 
-        participant = ticket.addParticipant(targetSupportPlayer);
+        participant = ticket.removeParticipant(targetSupportPlayer);
         if(participant != null){
-            sender.sendMessage(Messages.COMMAND_TICKET_ADD, VariableSet.create()
+            sender.sendMessage(Messages.COMMAND_TICKET_REMOVE, VariableSet.create()
                     .addDescribed("participant", participant));
         }
     }
