@@ -24,21 +24,21 @@ public class DefaultTicket implements Ticket {
     private final DefaultDKSupport dkSupport;
 
     private final UUID id;
-    private String category;
+    private String topic;
     private TicketState state;
     private Collection<TicketParticipant> participants;
     private List<TicketMessage> messages;
     private final long created;
     private final UUID creatorId;
 
-    public DefaultTicket(@NotNull DefaultDKSupport dkSupport, UUID creatorId) {
-        this(dkSupport, UUID.randomUUID(), null, TicketState.OPEN, System.currentTimeMillis(), creatorId);
+    public DefaultTicket(@NotNull DefaultDKSupport dkSupport, String topic, UUID creatorId) {
+        this(dkSupport, UUID.randomUUID(), topic, TicketState.OPEN, System.currentTimeMillis(), creatorId);
     }
 
-    public DefaultTicket(@NotNull DefaultDKSupport dkSupport, @NotNull UUID id, String category, @NotNull TicketState state, long created, UUID creatorId) {
+    public DefaultTicket(@NotNull DefaultDKSupport dkSupport, @NotNull UUID id, String topic, @NotNull TicketState state, long created, UUID creatorId) {
         this.dkSupport = dkSupport;
         this.id = id;
-        this.category = category;
+        this.topic = topic;
         this.state = state;
         this.created = created;
         this.creatorId = creatorId;
@@ -60,15 +60,15 @@ public class DefaultTicket implements Ticket {
     }
 
     @Override
-    public String getCategory() {
-        return this.category;
+    public String getTopic() {
+        return this.topic;
     }
 
     @Override
-    public boolean setCategory(@NotNull String category) {
-        this.category = category;
+    public boolean setTopic(@NotNull String topic) {
+        this.topic = topic;
         this.dkSupport.getStorage().getTickets().update()
-                .set("Category", category)
+                .set("Topic", topic)
                 .where("Id", getId())
                 .execute();
         return true;//@Todo event
@@ -205,6 +205,7 @@ public class DefaultTicket implements Ticket {
         TicketMessage ticketMessage = new DefaultTicketMessage(this, sender.getPlayer(), message, System.currentTimeMillis());
         TicketParticipantMessageEvent event = new DefaultTicketParticipantMessageEvent(this, sender, ticketMessage);
         this.dkSupport.getEventBus().callEvent(TicketParticipantMessageEvent.class, event);
+
         return ticketMessage;
     }
 
@@ -237,5 +238,14 @@ public class DefaultTicket implements Ticket {
                     resultEntry.getLong("Time")));
         }
         return this.messages;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(o instanceof Ticket) {
+            return ((Ticket)o).getId().equals(getId());
+        }
+        return false;
     }
 }

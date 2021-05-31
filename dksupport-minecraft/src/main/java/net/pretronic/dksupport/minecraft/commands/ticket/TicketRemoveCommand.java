@@ -17,6 +17,7 @@ import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.Setting;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
 public class TicketRemoveCommand extends BasicCommand {
 
@@ -30,16 +31,10 @@ public class TicketRemoveCommand extends BasicCommand {
     @Override
     public void execute(CommandSender sender, String[] arguments) {
         if(CommandUtil.isConsole(sender)) return;
-        MinecraftPlayer player = (MinecraftPlayer)sender;
+        OnlineMinecraftPlayer player = (OnlineMinecraftPlayer)sender;
 
-        Setting setting = player.getSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
-        if(setting == null) {
-            sender.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
-            return;
-        }
-        Ticket ticket = dksupport.getTicketManager().getTicket(Convert.toUUID(setting.getObjectValue()));
+        Ticket ticket = CommandUtil.getSelectedTicket(dksupport, player);
         if(ticket == null) {
-            sender.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
             return;
         }
 

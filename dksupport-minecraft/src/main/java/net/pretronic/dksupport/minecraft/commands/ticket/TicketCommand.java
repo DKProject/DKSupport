@@ -4,15 +4,19 @@ import net.pretronic.dksupport.api.DKSupport;
 import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import net.pretronic.dksupport.api.ticket.Ticket;
 import net.pretronic.dksupport.minecraft.commands.CommandUtil;
+import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.dksupport.minecraft.config.Messages;
+import net.pretronic.dksupport.minecraft.config.TicketTopic;
 import net.pretronic.libraries.command.NotFindable;
 import net.pretronic.libraries.command.command.MainCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 
+// ticket <topic> <message>
 public class TicketCommand extends MainCommand implements NotFindable {
 
     private final DKSupport dkSupport;
@@ -36,21 +40,28 @@ public class TicketCommand extends MainCommand implements NotFindable {
     }
 
     @Override
-    public void commandNotFound(CommandSender sender, String command, String[] args) {
+    public void commandNotFound(CommandSender sender, String rawTopic, String[] args) {
         if(CommandUtil.isConsole(sender)) return;
-        if(command == null || command.trim().isEmpty()) {
+        if(rawTopic == null || rawTopic.trim().isEmpty()) {
             CommandUtil.sendTicketHelpMessage(sender);
             return;
         }
+        TicketTopic ticketTopic = Iterators.findOne(DKSupportConfig.TICKET_TOPICS, topic -> topic.isSame(rawTopic));
+        if(ticketTopic == null) {
+            sender.sendMessage(Messages.ERROR_TICKET_TOPIC_NOTFOUND, VariableSet.create().add("name", rawTopic));
+            return;
+        }
+
         DKSupportPlayer player = ((MinecraftPlayer)sender).getAs(DKSupportPlayer.class);
         if(dkSupport.getTicketManager().getOpenTicketForCreator(player) != null) {
             sender.sendMessage(Messages.ERROR_ALREADY_OPEN_TICKET);
             return;
         }
-        String category = command + CommandUtil.readStringFromArguments(args, 0);
-        Ticket ticket = this.dkSupport.getTicketManager().createTicket(player);
+        String message = CommandUtil.readStringFromArguments(args, 0);
+        Ticket ticket = this.dkSupport.getTicketManager().createTicket(player, ticketTopic.getDisplayName());
         if(ticket != null) {
-            ticket.setCategory(category);
+            CommandUtil.setSelectedTicket((MinecraftPlayer) sender, ticket.getId());
+            ticket.sendMessage(ticket.getParticipant(player), message);
             sender.sendMessage(Messages.COMMAND_TICKET_CREATE, VariableSet.create()
                     .addDescribed("ticket", ticket));
         }

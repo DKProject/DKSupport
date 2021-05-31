@@ -15,8 +15,11 @@ public interface TicketManager {
 
     Ticket getOpenTicketForCreator(DKSupportPlayer player);
 
+    @NotNull
+    Collection<Ticket> getTickets(DKSupportPlayer player, TicketState state);
 
-    Ticket createTicket(@NotNull DKSupportPlayer creator);
+
+    Ticket createTicket(@NotNull DKSupportPlayer creator, String topic);
 
     boolean deleteTicket(@NotNull Ticket ticket);
 }

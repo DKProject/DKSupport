@@ -44,4 +44,17 @@ public class DefaultTicketMessage implements TicketMessage {
     public long getTime() {
         return this.time;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(o instanceof TicketMessage) {
+            TicketMessage other = (TicketMessage) o;
+            return getTicket().equals(other.getTicket())
+                    && getSender().equals(other.getSender())
+                    && getText().equals(other.getText())
+                    && getTime() == other.getTime();
+        }
+        return false;
+    }
 }

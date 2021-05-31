@@ -15,6 +15,7 @@ import net.pretronic.libraries.utility.Convert;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.runtime.api.Setting;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
 import java.util.UUID;
 
@@ -30,26 +31,28 @@ public class TicketCloseCommand extends BasicCommand {
     @Override
     public void execute(CommandSender sender, String[] arguments) {
         if(CommandUtil.isConsole(sender)) return;
-        MinecraftPlayer player = (MinecraftPlayer) sender;
-        UUID ticketId = null;
+        OnlineMinecraftPlayer player = (OnlineMinecraftPlayer) sender;
+        Ticket ticket;
         if(arguments.length == 0) {
-            Setting setting = player.getSetting("DKSupport", PlayerSettingsKey.SUPPORT);
-            if(setting != null) {
-                ticketId = Convert.toUUID(setting.getObjectValue());
-            }
+            ticket = CommandUtil.getSelectedTicket(dksupport, player);
+            if(ticket == null) return;
         } else {
             String rawTicketId = arguments[0];
             try {
-                ticketId = Convert.toUUID(rawTicketId);
+                ticket = this.dksupport.getTicketManager().getTicket(Convert.toUUID(rawTicketId));
+                if(ticket == null) {
+                    sender.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
+                    return;
+                }
+                if(ticket.getState() == TicketState.CLOSED) {
+                    player.removeSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
+                    sender.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
+                    return;
+                }
             } catch (IllegalArgumentException exception) {
                 sender.sendMessage(Messages.ERROR_UUID_NOT_VALID, VariableSet.create().addDescribed("value", rawTicketId));
+                return;
             }
-        }
-        Ticket ticket = this.dksupport.getTicketManager().getTicket(ticketId);
-
-        if(ticket == null){
-            sender.sendMessage(Messages.ERROR_TICKET_NOTFOUND);
-            return;
         }
 
         if(ticket.setState(TicketState.CLOSED)) {

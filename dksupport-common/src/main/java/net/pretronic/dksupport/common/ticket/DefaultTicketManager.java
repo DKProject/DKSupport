@@ -2,6 +2,7 @@ package net.pretronic.dksupport.common.ticket;
 
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.dksupport.api.event.ticket.TicketCreateEvent;
+import net.pretronic.dksupport.api.event.ticket.TicketCreatedEvent;
 import net.pretronic.dksupport.api.event.ticket.TicketDeleteEvent;
 import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import net.pretronic.dksupport.api.ticket.Ticket;
@@ -9,6 +10,7 @@ import net.pretronic.dksupport.api.ticket.TicketManager;
 import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.common.DefaultDKSupport;
 import net.pretronic.dksupport.common.event.ticket.DefaultTicketCreateEvent;
+import net.pretronic.dksupport.common.event.ticket.DefaultTicketCreatedEvent;
 import net.pretronic.dksupport.common.event.ticket.DefaultTicketDeleteEvent;
 import net.pretronic.libraries.caching.ArrayCache;
 import net.pretronic.libraries.caching.Cache;
@@ -57,10 +59,22 @@ public class DefaultTicketManager implements TicketManager {
     }
 
     @Override
-    public Ticket createTicket(@NotNull DKSupportPlayer creator) {
-        Ticket ticket = new DefaultTicket(this.dkSupport, creator.getId());
+    public @NotNull Collection<Ticket> getTickets(DKSupportPlayer player, TicketState state) {
+        Collection<Ticket> tickets = new ArrayList<>();
+        this.dkSupport.getStorage().getTickets().find()
+                .get("Id")
+                .join(this.dkSupport.getStorage().getTicketParticipants()).on("Id", "TicketId")
+                .where("State", state)
+                .where("PlayerId", player.getId())
+                .execute().loadIn(tickets, resultEntry -> getTicket(resultEntry.getUniqueId("Id")));
+        return tickets;
+    }
 
-        TicketCreateEvent event = new DefaultTicketCreateEvent(ticket, creator);
+    @Override
+    public Ticket createTicket(@NotNull DKSupportPlayer creator, String topic) {
+        Ticket ticket = new DefaultTicket(this.dkSupport, topic, creator.getId());
+
+        TicketCreateEvent event = new DefaultTicketCreateEvent(creator, topic);
         this.dkSupport.getEventBus().callEvent(TicketCreateEvent.class, event);
         if(event.isCancelled()) return null;
 
@@ -69,10 +83,14 @@ public class DefaultTicketManager implements TicketManager {
                 .set("State", ticket.getState())
                 .set("Created", ticket.getCreated())
                 .set("CreatorId", creator.getId())
+                .set("Topic", topic)
                 .execute();
+
 
         this.ticketCache.insert(ticket);
         ticket.addParticipant(creator);
+
+        this.dkSupport.getEventBus().callEvent(TicketCreatedEvent.class, new DefaultTicketCreatedEvent(ticket));
         return ticket;
     }
 
@@ -111,7 +129,7 @@ public class DefaultTicketManager implements TicketManager {
             if(resultEntry == null) return null;
             return new DefaultTicket(dkSupport,
                     resultEntry.getUniqueId("Id"),
-                    resultEntry.getString("Category"),
+                    resultEntry.getString("Topic"),
                     TicketState.parse(resultEntry.getString("State")),
                     resultEntry.getLong("Created"),
                     resultEntry.getUniqueId("CreatorId"));
@@ -144,7 +162,7 @@ public class DefaultTicketManager implements TicketManager {
             if(resultEntry == null) return null;
             return new DefaultTicket(dkSupport,
                     resultEntry.getUniqueId("Id"),
-                    resultEntry.getString("Category"),
+                    resultEntry.getString("Topic"),
                     TicketState.parse(resultEntry.getString("State")),
                     resultEntry.getLong("Created"),
                     creatorId);

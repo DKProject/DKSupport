@@ -43,7 +43,7 @@ public class TicketSelectCommand extends BasicCommand {
         OnlineMinecraftPlayer player = (OnlineMinecraftPlayer) sender;
 
         ticket.addParticipant(player.getAs(DKSupportPlayer.class));
-        player.setSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED, ticket.getId());
+        CommandUtil.setSelectedTicket(player, ticket.getId());
         player.sendMessage(Messages.COMMAND_TICKET_SELECT, VariableSet.create().addDescribed("ticket", ticket));
     }
 }

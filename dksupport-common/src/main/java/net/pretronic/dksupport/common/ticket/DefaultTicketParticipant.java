@@ -61,4 +61,15 @@ public class DefaultTicketParticipant implements TicketParticipant {
         this.receiveMessages = receiveMessages;
         return true;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(o instanceof TicketParticipant) {
+            TicketParticipant other = (TicketParticipant) o;
+            return getTicket().equals(other.getTicket())
+                    && getPlayer().equals(other.getPlayer());
+        }
+        return false;
+    }
 }

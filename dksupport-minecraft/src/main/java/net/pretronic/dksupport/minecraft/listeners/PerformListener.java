@@ -1,6 +1,6 @@
 package net.pretronic.dksupport.minecraft.listeners;
 
-import net.pretronic.dksupport.api.event.ticket.TicketCreateEvent;
+import net.pretronic.dksupport.api.event.ticket.TicketCreatedEvent;
 import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantMessageEvent;
 import net.pretronic.dksupport.api.ticket.Ticket;
 import net.pretronic.dksupport.api.ticket.TicketParticipant;
@@ -17,14 +17,10 @@ import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 public class PerformListener {
 
     @Listener(priority = EventPriority.HIGH, execution = ExecutionType.ASYNC)
-    public void onTicketCreate(TicketCreateEvent event) {
-        if(event.isCancelled()) return;
+    public void onTicketCreate(TicketCreatedEvent event) {
         Ticket ticket = event.getTicket();
         if(ticket.getState() == TicketState.OPEN) {
             VariableSet variables = VariableSet.create().addDescribed("ticket", event.getTicket());
-            System.out.println(event.getTicket());
-            System.out.println(event.getTicket().getCreator());
-            System.out.println(event.getTicket().getCategory());
             for (ConnectedMinecraftPlayer player : McNative.getInstance().getLocal().getConnectedPlayers()) {
                 if(player.hasSetting("DKSupport", PlayerSettingsKey.SUPPORT,true)) {
                     player.sendMessage(Messages.TICKET_CREATE_STAFF, variables);

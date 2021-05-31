@@ -17,6 +17,6 @@ public class DefaultDKSupportPlayerManager implements DKSupportPlayerManager {
 
     @Override
     public DKSupportPlayer getPlayer(@NotNull UUID playerId) {
-        return new DefaultDKSupportPlayer(playerId);//@Todo maybe caching
+        return new DefaultDKSupportPlayer(dkSupport, playerId);//@Todo maybe caching
     }
 }

@@ -19,9 +19,11 @@ public interface Ticket {
     TicketParticipant getCreator();
 
 
-    String getCategory();
+    String getTopic();
 
-    boolean setCategory(@NotNull String category);
+    boolean setTopic(@NotNull String topic);
+
+
 
 
     @NotNull

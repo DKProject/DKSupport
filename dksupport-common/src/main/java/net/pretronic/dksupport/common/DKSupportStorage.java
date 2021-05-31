@@ -19,7 +19,7 @@ public class DKSupportStorage {
 
         this.tickets = database.createCollection("dksupport_tickets")
                 .field("Id", DataType.UUID, FieldOption.PRIMARY_KEY)
-                .field("Category", DataType.STRING)
+                .field("Topic", DataType.STRING)
                 .field("State", DataType.STRING, FieldOption.NOT_NULL)
                 .field("CreatorId", DataType.UUID, FieldOption.NOT_NULL)
                 .field("Created", DataType.LONG, FieldOption.NOT_NULL)

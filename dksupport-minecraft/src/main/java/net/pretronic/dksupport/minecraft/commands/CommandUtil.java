@@ -2,14 +2,20 @@ package net.pretronic.dksupport.minecraft.commands;
 
 import net.pretronic.dksupport.api.DKSupport;
 import net.pretronic.dksupport.api.player.DKSupportPlayer;
+import net.pretronic.dksupport.api.ticket.Ticket;
 import net.pretronic.dksupport.api.ticket.TicketState;
+import net.pretronic.dksupport.minecraft.PlayerSettingsKey;
 import net.pretronic.dksupport.minecraft.config.Messages;
 import net.pretronic.dksupport.minecraft.config.Permissions;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.utility.Convert;
 import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.Setting;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
+
+import java.util.UUID;
 
 public class CommandUtil {
 
@@ -54,5 +60,31 @@ public class CommandUtil {
             builder.append(arguments[i]);
         }
         return builder.toString();
+    }
+
+    public static void setSelectedTicket(MinecraftPlayer player, UUID ticketId) {
+        player.setSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED, ticketId);
+    }
+
+    public static Ticket getSelectedTicket(DKSupport dkSupport, OnlineMinecraftPlayer player) {
+        if(player.hasSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED)) {
+            Setting setting = player.getSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
+            UUID ticketId = Convert.toUUID(setting.getObjectValue());
+            Ticket ticket = dkSupport.getTicketManager().getTicket(Convert.toUUID(ticketId));
+            if(ticket == null) {
+                player.removeSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
+                player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
+                return null;
+            }
+            if(ticket.getState() == TicketState.CLOSED) {
+                player.removeSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
+                player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
+                return null;
+            }
+            return ticket;
+        } else {
+            player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
+            return null;
+        }
     }
 }

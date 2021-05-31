@@ -41,9 +41,9 @@ public class TicketTakeCommand extends BasicCommand {
             sender.sendMessage(Messages.ERROR_TICKET_NOT_OPEN);
             return;
         }
-
-        if(ticket.take(((OnlineMinecraftPlayer) sender).getAs(DKSupportPlayer.class)) != null){
-            ((MinecraftPlayer)sender).setSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED, ticket.getId());
+        OnlineMinecraftPlayer player = ((OnlineMinecraftPlayer) sender);
+        if(ticket.take(player.getAs(DKSupportPlayer.class)) != null){
+            CommandUtil.setSelectedTicket(player, ticket.getId());
             sender.sendMessage(Messages.COMMAND_TICKET_TAKE, VariableSet.create().addDescribed("ticket", ticket));
         }
     }

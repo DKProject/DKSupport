@@ -5,8 +5,9 @@ import org.mcnative.runtime.api.text.components.MessageComponent;
 
 public class Messages {
 
-    public static MessageComponent<?> ERROR_ONLY_PLAYER = Text.ofMessageKey("dksupport.error.onlyPlayer");
-    public static MessageComponent<?> ERROR_TICKET_NOTFOUND = Text.ofMessageKey("dksupport.error.ticket.notFound");
+    public static final MessageComponent<?> ERROR_ONLY_PLAYER = Text.ofMessageKey("dksupport.error.onlyPlayer");
+    public static final MessageComponent<?> ERROR_TICKET_NOTFOUND = Text.ofMessageKey("dksupport.error.ticket.notFound");
+    public static final MessageComponent<?> ERROR_TICKET_TOPIC_NOTFOUND = Text.ofMessageKey("dksupport.error.ticket.topic.notFound");
     public static final MessageComponent<?> ERROR_UUID_NOT_VALID = Text.ofMessageKey("dksupport.error.uuid.notValid");
     public static final MessageComponent<?> ERROR_PARTICIPANT_ALREADY = Text.ofMessageKey("dksupport.error.participant.already");
     public static final MessageComponent<?> ERROR_PARTICIPANT_NOT = Text.ofMessageKey("dksupport.error.participant.not");
