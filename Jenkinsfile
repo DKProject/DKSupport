@@ -6,21 +6,20 @@ final String CI_NAME = "PretronicCI"
 final String CI_EMAIL = "ci@pretronic.net"
 final String COMMIT_MESSAGE = "Version change %version%"
 
-final String RESOURCE_ID = "f9aa2e05-fb5a-407a-844c-175105ec3544"
+final String RESOURCE_ID = "a120140d-bbdf-11eb-8ba0-0242ac180002"
 
 final String BRANCH_DEVELOPMENT = "development"
 final String BRANCH_BETA = "beta"
 final String BRANCH_MASTER = "master"
 
-String PROJECT_NAME = "DKFriends"
+String PROJECT_NAME = "DKSupport"
 
 boolean JAVADOCS_ENABLED = true
-String JAVADOCS_NAME = "dkfriends"
-String JAVADOCS_MODULES = ":DKFriends,:dkfriends-api,:dkfriends-api-minecraft"
+String JAVADOCS_NAME = "dksupport"
+String JAVADOCS_MODULES = ":DKSupport,:dksupport-api"
 
 def MIRROR_SERVER_PUBLISHING = [
-        "dkfriends-minecraft/target/dkfriends-minecraft-%version%.jar": "default",
-        "dkfriends-minecraft/target/dkfriends-minecraft-%version%-loader.jar": "loader",
+        "dksupport-minecraft/target/dksupport-minecraft-%version%.jar": "default"
 ]
 
 String MAVEN_SETTINGS_FILE_ID = "afe25550-309e-40c1-80ad-59da7989fb4e"
