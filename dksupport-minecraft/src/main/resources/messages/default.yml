@@ -7,7 +7,7 @@ meta:
     code: 'en'
 messages:
   dksupport.prefix: '&8» &eDKSupport &8|&f'
-  dksupport.prefix.ticket: '&8» &bTicket &e{ticket.creator.player.displayName} &7by &e{sender.player.displayName} &8|&f'
+  dksupport.prefix.ticket: '&8» &bTicket &e{ticket.creator.player.displayName} &8|&f'
 
   dksupport.error.ticket.notFound: '${dksupport.prefix} &cTicket &e{id} &cnot found'
   dksupport.error.ticket.topic.notFound: '${dksupport.prefix} &cTicket topic &e{name} &cnot found'
@@ -25,8 +25,7 @@ messages:
   dksupport.player.staff.status.change: '${dksupport.prefix} &7You are now {statusFormatted}'
   dksupport.player.staff.status.login: '&aLogin'
   dksupport.player.staff.status.logout: '&cLogout'
-  dksupport.ticket.create.staff: '${dksupport.prefix} &e{ticket.creator.player.displayName} &7has opened a ticket with topic &e{ticket.topic}
-  ${dksupport.prefix} &8| {ticket.creator.displayName} &8&l>> &e{ticket.topic} !["&8[&7Take&8]"]("run:///ticket take {ticket.id}")'
+  dksupport.ticket.create.staff: '${dksupport.prefix} {ticket.creator.displayName} &8&l>> &e{ticket.topic} !["&8[&7Take&8]"]("run:///ticket take {ticket.id}")'
   dksupport.ticket.message.received: '${dksupport.prefix.ticket} {message.text}'
 
   dksupport.command.ticket.help.user: '${dksupport.prefix} &cInvalid usage of ticket command&8:

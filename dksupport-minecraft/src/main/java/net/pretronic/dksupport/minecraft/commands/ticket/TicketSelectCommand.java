@@ -29,6 +29,10 @@ public class TicketSelectCommand extends BasicCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(CommandUtil.isConsole(sender)) return;
+        if(args.length != 1) {
+            CommandUtil.sendTicketHelpMessage(sender);
+            return;
+        }
         Ticket ticket = dkSupport.getTicketManager().getTicket(UUID.fromString(args[0]));
 
         if(ticket == null){
