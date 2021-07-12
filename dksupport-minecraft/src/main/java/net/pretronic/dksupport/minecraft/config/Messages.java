@@ -27,6 +27,8 @@ public class Messages {
 
     public static final MessageComponent<?> TICKET_CREATE_STAFF = Text.ofMessageKey("dksupport.ticket.create.staff");
     public static final MessageComponent<?> TICKET_MESSAGE_RECEIVED = Text.ofMessageKey("dksupport.ticket.message.received");
+    public static final MessageComponent<?> TICKET_TAKE_STAFF = Text.ofMessageKey("dksupport.ticket.take.staff");
+    public static final MessageComponent<?> TICKET_TAKE_CREATOR = Text.ofMessageKey("dksupport.ticket.take.creator");
 
     public static final MessageComponent<?> COMMAND_TICKET_HELP_USER = Text.ofMessageKey("dksupport.command.ticket.help.user");
     public static final MessageComponent<?> COMMAND_TICKET_HELP_STAFF = Text.ofMessageKey("dksupport.command.ticket.help.staff");

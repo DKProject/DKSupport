@@ -1,6 +1,7 @@
 package net.pretronic.dksupport.minecraft.listeners;
 
 import net.pretronic.dksupport.api.event.ticket.TicketCreatedEvent;
+import net.pretronic.dksupport.api.event.ticket.TicketTakeEvent;
 import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantMessageEvent;
 import net.pretronic.dksupport.api.ticket.Ticket;
 import net.pretronic.dksupport.api.ticket.TicketParticipant;
@@ -13,6 +14,7 @@ import net.pretronic.libraries.event.execution.ExecutionType;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
 
 public class PerformListener {
 
@@ -40,6 +42,21 @@ public class PerformListener {
                         .addDescribed("sender", event.getParticipant())
                         .addDescribed("message", event.getMessage()));
             }
+        }
+    }
+
+    @Listener(priority = EventPriority.HIGHEST)
+    public void onTicketTake(TicketTakeEvent event) {
+        if(event.isCancelled()) return;
+        VariableSet variables = VariableSet.create().addDescribed("ticket", event.getTicket()).addDescribed("staff", event.getStaff());
+
+        MinecraftPlayer staff = McNative.getInstance().getPlayerManager().getPlayer(event.getStaff().getId());
+        if(staff.isOnline()) {
+            staff.getAsOnlinePlayer().sendMessage(Messages.TICKET_TAKE_STAFF, variables);
+        }
+        MinecraftPlayer creator = McNative.getInstance().getPlayerManager().getPlayer(event.getTicket().getCreator().getPlayer().getId());
+        if(creator.isOnline()) {
+            creator.getAsOnlinePlayer().sendMessage(Messages.TICKET_TAKE_CREATOR, variables);
         }
     }
 }

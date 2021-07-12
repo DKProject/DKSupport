@@ -75,3 +75,6 @@ messages:
   &8» &7State&8: &e{ticket.state}
   &8» &7Participants&8: @for("participant" in {participants}, ${dksupport.command.ticket.info.loop},"\n", "\n")'
   dksupport.command.ticket.info.loop: '&8- {participant.player.displayName}'
+
+  dksupport.ticket.take.creator: '${dksupport.prefix} &7Your ticket was took by {staff.displayName}'
+  dksupport.ticket.take.staff: '${dksupport.prefix} &7You have took the ticket of {ticket.creator.displayName}&8. &7Type &e/ticket leave &7to leave the ticket&8.'
