@@ -20,7 +20,8 @@ public class DKSupportConfig {
 
     public static String PERMISSION_STAFF = "dksupport.staff";
 
-    public static Collection<TicketTopic> TICKET_TOPICS = Arrays.asList(new TicketTopic("bugreport", "Bug report", "bug", "bugs"),
-            new TicketTopic("question", "Question"),
-            new TicketTopic("help", "Ask for help"));
+    public static Collection<TicketTopic> TICKET_TOPICS = Arrays.asList(
+            new TicketTopic("1", "Bug report", "bug", "bugs"),
+            new TicketTopic("2", "Question"),
+            new TicketTopic("3", "Ask for help"));
 }

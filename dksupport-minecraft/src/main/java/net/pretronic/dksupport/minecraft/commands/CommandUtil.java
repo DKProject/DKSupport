@@ -45,11 +45,7 @@ public class CommandUtil {
     }
 
     public static void sendTicketHelpMessage(CommandSender sender) {
-        Collection<String> topics = new ArrayList<>();
-        for (TicketTopic ticketTopic : DKSupportConfig.TICKET_TOPICS) {
-            topics.add(ticketTopic.getDisplayName());
-        }
-        VariableSet variables = VariableSet.create().addDescribed("topics", topics);
+        VariableSet variables = VariableSet.create().addDescribed("topics", DKSupportConfig.TICKET_TOPICS);
         if((sender instanceof MinecraftPlayer && ((MinecraftPlayer)sender).hasPermission(Permissions.STAFF))
                 || McNative.getInstance().getConsoleSender().equals(sender)) {
             sender.sendMessage(Messages.COMMAND_TICKET_HELP_STAFF, variables);

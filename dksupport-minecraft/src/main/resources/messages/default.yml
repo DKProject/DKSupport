@@ -26,13 +26,12 @@ messages:
   dksupport.player.staff.status.login: '&aLogin'
   dksupport.player.staff.status.logout: '&cLogout'
   dksupport.ticket.create.staff: '${dksupport.prefix} &e{ticket.creator.player.displayName} &7has opened a ticket with topic &e{ticket.topic}
-  ${dksupport.prefix} !["&8[&aTake&8]"]("run:///ticket take {ticket.id}")'
+  ${dksupport.prefix} &8| {ticket.creator.displayName} &8&l>> &e{ticket.topic} !["&8[&7Take&8]"]("run:///ticket take {ticket.id}")'
   dksupport.ticket.message.received: '${dksupport.prefix.ticket} {message.text}'
 
   dksupport.command.ticket.help.user: '${dksupport.prefix} &cInvalid usage of ticket command&8:
   &7/ticket <topic> [message]
-
-  &7Topics&8: @for("topic" in {topics}, "&8- {topic}","\n", "\n")'
+  &7Topics&8: @for("topic" in {topics}, ${dksupport.command.ticket.help.topic.list},"\n", "\n")'
   dksupport.command.ticket.help.staff: '${dksupport.prefix} &cInvalid usage of ticket command&8:
   &7/ticket list
   &7/ticket login
@@ -40,7 +39,8 @@ messages:
   &7/ticket logout
   &7/ticket <topic> [message]
 
-  &7Topics&8: @for("topic" in {topics}, "&8- {topic}","\n", "\n")'
+  &7Topics&8: @for("topic" in {topics}, ${dksupport.command.ticket.help.topic.list},"\n", "\n")'
+  dksupport.command.ticket.help.topic.list: '&8- &e{topic.name} &8| &e{topic.displayName}'
 
   dksupport.command.ticket.create: '${dksupport.prefix} &7You have open a ticket for &e{ticket.topic}'
 
