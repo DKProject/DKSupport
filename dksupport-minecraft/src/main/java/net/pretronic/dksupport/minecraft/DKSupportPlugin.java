@@ -3,6 +3,7 @@ package net.pretronic.dksupport.minecraft;
 import net.pretronic.dksupport.api.DKSupport;
 import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import net.pretronic.dksupport.common.DefaultDKSupport;
+import net.pretronic.dksupport.minecraft.commands.DKSupportCommand;
 import net.pretronic.dksupport.minecraft.commands.ticket.TicketCommand;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.dksupport.minecraft.listeners.PerformListener;
@@ -44,6 +45,7 @@ public class DKSupportPlugin extends MinecraftPlugin {
         getRuntime().getLocal().getEventBus().subscribe(this,new PlayerListener(instance));
         getRuntime().getLocal().getEventBus().subscribe(this, new PerformListener());
         getRuntime().getLocal().getCommandManager().registerCommand(new TicketCommand(this,DKSupportConfig.COMMAND_TICKET, instance));
+        getRuntime().getLocal().getCommandManager().registerCommand(new DKSupportCommand(this));
         getRuntime().getPlayerManager().registerPlayerAdapter(DKSupportPlayer.class, player -> instance.getPlayerManager().getPlayer(player.getUniqueId()));
 
         DescriberRegistrar.register(instance);
