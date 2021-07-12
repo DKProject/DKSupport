@@ -5,8 +5,10 @@ import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import net.pretronic.dksupport.api.ticket.Ticket;
 import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.minecraft.PlayerSettingsKey;
+import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.dksupport.minecraft.config.Messages;
 import net.pretronic.dksupport.minecraft.config.Permissions;
+import net.pretronic.dksupport.minecraft.config.TicketTopic;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.Convert;
@@ -15,6 +17,8 @@ import org.mcnative.runtime.api.Setting;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 public class CommandUtil {
@@ -41,11 +45,16 @@ public class CommandUtil {
     }
 
     public static void sendTicketHelpMessage(CommandSender sender) {
+        Collection<String> topics = new ArrayList<>();
+        for (TicketTopic ticketTopic : DKSupportConfig.TICKET_TOPICS) {
+            topics.add(ticketTopic.getDisplayName());
+        }
+        VariableSet variables = VariableSet.create().addDescribed("topics", topics);
         if((sender instanceof MinecraftPlayer && ((MinecraftPlayer)sender).hasPermission(Permissions.STAFF))
                 || McNative.getInstance().getConsoleSender().equals(sender)) {
-            sender.sendMessage(Messages.COMMAND_TICKET_HELP_STAFF);
+            sender.sendMessage(Messages.COMMAND_TICKET_HELP_STAFF, variables);
         } else {
-            sender.sendMessage(Messages.COMMAND_TICKET_HELP_USER);
+            sender.sendMessage(Messages.COMMAND_TICKET_HELP_USER, variables);
         }
     }
 

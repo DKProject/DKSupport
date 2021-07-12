@@ -30,9 +30,17 @@ messages:
   dksupport.ticket.message.received: '${dksupport.prefix.ticket} {message.text}'
 
   dksupport.command.ticket.help.user: '${dksupport.prefix} &cInvalid usage of ticket command&8:
-  &7/ticket <topic> [message]'
+  &7/ticket <topic> [message]
+
+  &7Topics&8: @for("topic" in {topics}, "&8- {topic}","\n", "\n")'
   dksupport.command.ticket.help.staff: '${dksupport.prefix} &cInvalid usage of ticket command&8:
-  &7/ticket <topic> [message]'
+  &7/ticket list
+  &7/ticket login
+  &7/ticket logout
+  &7/ticket logout
+  &7/ticket <topic> [message]
+
+  &7Topics&8: @for("topic" in {topics}, "&8- {topic}","\n", "\n")'
 
   dksupport.command.ticket.create: '${dksupport.prefix} &7You have open a ticket for &e{ticket.topic}'
 
