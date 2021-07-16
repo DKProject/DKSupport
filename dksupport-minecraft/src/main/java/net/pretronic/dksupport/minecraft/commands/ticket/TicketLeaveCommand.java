@@ -3,6 +3,7 @@ package net.pretronic.dksupport.minecraft.commands.ticket;
 import net.pretronic.dksupport.api.DKSupport;
 import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import net.pretronic.dksupport.api.ticket.Ticket;
+import net.pretronic.dksupport.minecraft.PlayerSettingsKey;
 import net.pretronic.dksupport.minecraft.commands.CommandUtil;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.dksupport.minecraft.config.Messages;
@@ -50,6 +51,7 @@ public class TicketLeaveCommand extends BasicCommand {
         if(ticket.removeParticipant(player) != null){
             sender.sendMessage(Messages.COMMAND_TICKET_LEAVE, VariableSet.create()
                     .addDescribed("ticket", ticket));
+            ((OnlineMinecraftPlayer)sender).removeSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
             return;
         }
     }
