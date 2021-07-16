@@ -39,6 +39,7 @@ public class PlayerListener {
         OnlineMinecraftPlayer player = event.getOnlinePlayer();
         for (Ticket ticket : this.dkSupport.getTicketManager().getTickets(TicketState.PROCESSING)) {
             TicketParticipant participant = ticket.getParticipant(player.getUniqueId());
+            System.out.println(ticket.getId() + ":" + participant + ":" + player.hasSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED,ticket.getId()));
             if(participant != null && player.hasSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED,ticket.getId())){
                 event.setCancelled(true);
                 ticket.sendMessage(participant, event.getMessage());
