@@ -46,7 +46,7 @@ messages:
   dksupport.command.ticket.create: '${dksupport.prefix} &7You have created a ticket for &e{ticket.topic}'
 
   dksupport.command.ticket.list: '${dksupport.prefix} &7Open tickets @for("ticket" in {tickets}, ${dksupport.command.ticket.list.loop},"\n", "\n")'
-  dksupport.command.ticket.list.loop: ' &8- &e{ticket.topic} &7by &e{ticket.creator.player.displayName}'
+  dksupport.command.ticket.list.loop: ' &8- &e{ticket.creator.player.displayName} &8[&e&e{ticket.topic}&8] !["&8[&aTake&8]"]("run:///ticket take {ticket.id}") '
 
   dksupport.command.ticket.take: '${dksupport.prefix} &7You have taken the ticket of &e{ticket.creator.player.displayName}
   ${dksupport.command.ticket.info}
@@ -62,8 +62,8 @@ messages:
   &7Enter #leave to leave this ticket
   &7Enter #close to close this ticket'
 
-  dksupport.command.ticket.my: '${dksupport.prefix} &7My tickets @for("ticket" in {player.myTickets}, ${dksupport.command.ticket.my.loop},"\n", "\n")'
-  dksupport.command.ticket.my.loop: '&8- &e{ticket.topic} &7by &e{ticket.creator.player.displayName}'
+  dksupport.command.ticket.my: '${dksupport.prefix} &7My staff tickets @for("ticket" in {player.myTickets}, ${dksupport.command.ticket.my.loop},"\n", "\n")'
+  dksupport.command.ticket.my.loop: ' &8- &e{ticket.creator.player.displayName} &8[&e&e{ticket.topic}&8] !["&8[&aSelect&8]"]("run:///ticket my {ticket.id}") '
 
   dksupport.command.ticket.close: '${dksupport.prefix} &7You have closed the ticket'
   dksupport.command.ticket.leave: '${dksupport.prefix} &7You have left the ticket'
