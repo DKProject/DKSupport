@@ -7,7 +7,7 @@ meta:
     code: 'en'
 messages:
   dksupport.prefix: '&8» &eDKSupport &8|&f'
-  dksupport.prefix.ticket: '&8» &bTicket &e{ticket.creator.player.displayName} &8|&f'
+  dksupport.prefix.ticket: '&8» &bTicket &e{sender.displayName} &8|&7'
 
   dksupport.error.ticket.notFound: '${dksupport.prefix} &cTicket &e{id} &cnot found'
   dksupport.error.ticket.topic.notFound: '${dksupport.prefix} &cTicket topic &e{name} &cnot found'
@@ -50,14 +50,14 @@ messages:
   dksupport.command.ticket.list.loop: ' &8- &e{ticket.creator.player.displayName} &8[&e&e{ticket.topic}&8] !["&8[&aTake&8]"]("run:///ticket take {ticket.id}") '
 
   dksupport.command.ticket.take: '${dksupport.prefix} &7You have taken the ticket of &e{ticket.creator.player.displayName}
-  ${dksupport.command.ticket.info}
+  ${dksupport.command.ticket.info.details}
 
   &7Use the chat to replay to this ticket
   &7Enter #leave to leave this ticket
   &7Enter #close to close this ticket'
 
   dksupport.command.ticket.select: '${dksupport.prefix} &7You have selected the ticket of &e{ticket.creator.player.displayName}
-  ${dksupport.command.ticket.info}
+  ${dksupport.command.ticket.info.details}
 
   &7Use the chat to replay to this ticket
   &7Enter #leave to leave this ticket
@@ -66,12 +66,13 @@ messages:
   dksupport.command.ticket.my: '${dksupport.prefix} &7My staff tickets @for("ticket" in {player.myTickets}, ${dksupport.command.ticket.my.loop},"\n", "\n")'
   dksupport.command.ticket.my.loop: ' &8- &e{ticket.creator.player.displayName} &8[&e&e{ticket.topic}&8] !["&8[&aSelect&8]"]("run:///ticket select {ticket.id}") '
 
-  dksupport.command.ticket.close: '${dksupport.prefix} &7You have closed the ticket'
-  dksupport.command.ticket.leave: '${dksupport.prefix} &7You have left the ticket'
-  dksupport.command.ticket.add: '${dksupport.prefix} &7You have added the player &e{participant.player.displayName} &7to this ticket'
-  dksupport.command.ticket.remove: '${dksupport.prefix} &7You have removed the player &e{participant.player.displayName} &7from this ticket'
+  dksupport.command.ticket.close: '${dksupport.prefix} &7You have closed this ticket'
+  dksupport.command.ticket.leave: '${dksupport.prefix} &7You have left this ticket'
+  dksupport.command.ticket.add: '${dksupport.prefix} &7You have added &e{participant.player.displayName} &7to this ticket'
+  dksupport.command.ticket.remove: '${dksupport.prefix} &7You have removed &e{participant.player.displayName} &7from this ticket'
   dksupport.command.ticket.info: '${dksupport.prefix} &7Ticket info
-  &8» &7Creator&8: {ticket.creator.player.displayName}
+  ${dksupport.command.ticket.info.details}'
+  dksupport.command.ticket.info.details: '&8» &7Creator&8: {ticket.creator.player.displayName}
   &8» &7Topic&8: &e{ticket.topic}
   &8» &7State&8: &e{ticket.state}
   &8» &7Participants&8: @for("participant" in {participants}, ${dksupport.command.ticket.info.loop},"\n", "\n")'
