@@ -5,6 +5,7 @@ import net.pretronic.dksupport.api.ticket.Ticket;
 import net.pretronic.dksupport.api.ticket.TicketParticipant;
 import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.minecraft.PlayerSettingsKey;
+import net.pretronic.dksupport.minecraft.commands.CommandUtil;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.dksupport.minecraft.config.Messages;
 import net.pretronic.libraries.event.EventPriority;
@@ -39,8 +40,8 @@ public class PlayerListener {
         OnlineMinecraftPlayer player = event.getOnlinePlayer();
         for (Ticket ticket : this.dkSupport.getTicketManager().getTickets(TicketState.PROCESSING)) {
             TicketParticipant participant = ticket.getParticipant(player.getUniqueId());
-            System.out.println(ticket.getId() + ":" + participant + ":" + player.hasSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED,ticket.getId()));
-            if(participant != null && player.hasSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED,ticket.getId())){
+            System.out.println(ticket.getId() + ":" + participant + ":" + CommandUtil.getSelectedTicket(dkSupport, player, false));
+            if(participant != null && CommandUtil.getSelectedTicket(dkSupport, player, false) != null){
                 event.setCancelled(true);
                 ticket.sendMessage(participant, event.getMessage());
                 break;
