@@ -8,18 +8,25 @@ import net.pretronic.dksupport.minecraft.PlayerSettingsKey;
 import net.pretronic.dksupport.minecraft.commands.CommandUtil;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.dksupport.minecraft.config.Messages;
+import net.pretronic.dksupport.minecraft.config.TicketTopic;
+import net.pretronic.libraries.command.Completable;
 import net.pretronic.libraries.command.command.BasicCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.Convert;
+import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.Setting;
+import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
-public class TicketAddCommand extends BasicCommand {
+import java.util.Collection;
+import java.util.Collections;
+
+public class TicketAddCommand extends BasicCommand implements Completable {
 
     private final DKSupport dksupport;
 
@@ -59,5 +66,14 @@ public class TicketAddCommand extends BasicCommand {
             sender.sendMessage(Messages.COMMAND_TICKET_ADD, VariableSet.create()
                     .addDescribed("participant", participant));
         }
+    }
+
+    @Override
+    public Collection<String> complete(CommandSender sender, String[] args) {
+        if(CommandUtil.isConsole(sender) || args.length == 0) return Collections.emptyList();
+        String name = args[0];
+        return Iterators.map(McNative.getInstance().getLocal().getConnectedPlayers()
+                , ConnectedMinecraftPlayer::getName
+                , player -> player.getName().toLowerCase().startsWith(name.toLowerCase()));
     }
 }
