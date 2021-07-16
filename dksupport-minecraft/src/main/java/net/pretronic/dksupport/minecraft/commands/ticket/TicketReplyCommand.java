@@ -30,33 +30,27 @@ public class TicketReplyCommand extends BasicCommand {
         OnlineMinecraftPlayer player = (OnlineMinecraftPlayer) sender;
 
         Ticket ticket;
-        String message;
-        if(player.hasPermission(Permissions.STAFF)) {
-            if(args.length == 0) {
-                CommandUtil.sendTicketHelpMessage(sender);
-                return;
-            }
-            UUID ticketId;
-            try {
-                ticketId = UUID.fromString(args[0]);
-            } catch (IllegalArgumentException ignored) {
-                CommandUtil.sendTicketHelpMessage(sender);
-                return;
-            }
-            ticket = dkSupport.getTicketManager().getTicket(ticketId);
-            if(ticket == null) {
-                player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
-                return;
-            }
-            message = CommandUtil.readStringFromArguments(args, 1);
-        } else {
-            ticket = dkSupport.getTicketManager().getTicketForCreator(player.getAs(DKSupportPlayer.class), TicketState.PROCESSING);
-            if(ticket == null) {
-                player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
-                return;
-            }
-            message = CommandUtil.readStringFromArguments(args, 0);
+        if(args.length == 0) {
+            CommandUtil.sendTicketHelpMessage(sender);
+            return;
         }
+
+        UUID ticketId;
+        try {
+            ticketId = UUID.fromString(args[0]);
+        } catch (IllegalArgumentException ignored) {
+            CommandUtil.sendTicketHelpMessage(sender);
+            return;
+        }
+
+        ticket = dkSupport.getTicketManager().getTicket(ticketId);
+        if(ticket == null || ticket.getParticipant(player.getUniqueId()) == null) {
+            player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
+            return;
+        }
+
+        String message = CommandUtil.readStringFromArguments(args, 1);
+
         ticket.sendMessage(ticket.getParticipant(player.getUniqueId()), message);
     }
 }
