@@ -28,11 +28,16 @@ public class TicketLeaveCommand extends BasicCommand {
     public void execute(CommandSender sender, String[] arguments) {
         if(CommandUtil.isConsole(sender)) return;
 
-        Ticket ticket = dksupport.getTicketManager().getTicket(UUID.fromString(arguments[0]));
-
-        if(ticket == null){
-            sender.sendMessage(Messages.ERROR_TICKET_NOTFOUND);
-            return;
+        Ticket ticket;
+        if(arguments.length == 1) {
+            ticket = dksupport.getTicketManager().getTicket(UUID.fromString(arguments[0]));
+            if(ticket == null){
+                sender.sendMessage(Messages.ERROR_TICKET_NOTFOUND, VariableSet.create().add("id", arguments[0]));
+                return;
+            }
+        } else {
+            ticket = CommandUtil.getSelectedTicket(dksupport, (OnlineMinecraftPlayer) sender);
+            if(ticket == null) return;
         }
 
         DKSupportPlayer player = ((OnlineMinecraftPlayer) sender).getAs(DKSupportPlayer.class);
