@@ -72,6 +72,10 @@ public class CommandUtil {
     }
 
     public static Ticket getSelectedTicket(DKSupport dkSupport, OnlineMinecraftPlayer player) {
+        return getSelectedTicket(dkSupport, player, true);
+    }
+
+    public static Ticket getSelectedTicket(DKSupport dkSupport, OnlineMinecraftPlayer player, boolean sendMessage) {
         if(player.hasSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED)) {
             Setting setting = player.getSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
             UUID ticketId = Convert.toUUID(setting.getObjectValue());
@@ -88,7 +92,7 @@ public class CommandUtil {
             }
             return ticket;
         } else {
-            player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
+            if(sendMessage) player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
             return null;
         }
     }

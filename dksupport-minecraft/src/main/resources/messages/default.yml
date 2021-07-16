@@ -19,6 +19,7 @@ messages:
   dksupport.error.ticket.notSelected: '${dksupport.prefix} &cYou have no ticket selected'
   dksupport.error.player.notFound: '${dksupport.prefix} &cPlayer &e{name} &cnot found'
   dksupport.error.participant.already: '${dksupport.prefix} &e{participant.player.displayName} &cis already a participant of this ticket'
+  dksupport.error.notStaff: '${dksupport.prefix} &cYou are not allowed to perform this action'
 
   dksupport.player.staff.status.now: '${dksupport.prefix} &7You are {statusFormatted}'
   dksupport.player.staff.status.already: '${dksupport.prefix} &7You are already {statusFormatted}'

@@ -16,6 +16,7 @@ public class Messages {
     public static final MessageComponent<?> ERROR_TICKET_NOT_PROCESSING = Text.ofMessageKey("dksupport.error.ticket.notProcessing");
     public static final MessageComponent<?> ERROR_TICKET_NOT_SELECTED = Text.ofMessageKey("dksupport.error.ticket.notSelected");
     public static final MessageComponent<?> ERROR_PLAYER_NOT_FOUND = Text.ofMessageKey("dksupport.error.player.notFound");
+    public static final MessageComponent<?> ERROR_NOT_STAFF = Text.ofMessageKey("dksupport.error.notStaff");
 
 
     public static MessageComponent<?> STAFF_STATUS_NOW = Text.ofMessageKey("dksupport.player.staff.status.now");

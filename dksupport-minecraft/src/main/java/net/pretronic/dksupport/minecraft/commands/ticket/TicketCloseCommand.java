@@ -7,6 +7,7 @@ import net.pretronic.dksupport.minecraft.PlayerSettingsKey;
 import net.pretronic.dksupport.minecraft.commands.CommandUtil;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.dksupport.minecraft.config.Messages;
+import net.pretronic.dksupport.minecraft.config.Permissions;
 import net.pretronic.libraries.command.command.BasicCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.sender.CommandSender;
@@ -24,7 +25,7 @@ public class TicketCloseCommand extends BasicCommand {
     private final DKSupport dksupport;
 
     public TicketCloseCommand(ObjectOwner owner, DKSupport dksupport) {
-        super(owner, CommandConfiguration.newBuilder().name("close").permission(DKSupportConfig.PERMISSION_STAFF).create());
+        super(owner, CommandConfiguration.newBuilder().name("close").create());
         this.dksupport = dksupport;
     }
 
@@ -37,6 +38,10 @@ public class TicketCloseCommand extends BasicCommand {
             ticket = CommandUtil.getSelectedTicket(dksupport, player);
             if(ticket == null) return;
         } else {
+            if(!sender.hasPermission(Permissions.STAFF)) {
+                sender.sendMessage(Messages.ERROR_NOT_STAFF);
+                return;
+            }
             String rawTicketId = arguments[0];
             try {
                 ticket = this.dksupport.getTicketManager().getTicket(Convert.toUUID(rawTicketId));
