@@ -28,7 +28,7 @@ messages:
   dksupport.player.staff.status.logout: '&clogged out'
 
   dksupport.ticket.create.staff: '${dksupport.prefix} {ticket.creator.displayName} &8&l>> &e{ticket.topic} !["&8[&7Take&8]"]("run:///ticket take {ticket.id}")'
-  dksupport.ticket.message.received: '&8» &bTicket &8| &e{sender.displayName}&8: !["&8[&7Replay&8]"]("suggest:///ticket replay ") {message.text}'
+  dksupport.ticket.message.received: '&8» &bTicket &8| &e{sender.displayName}&8: !["&8[&7Reply&8]"]("suggest:///ticket reply ") {message.text}'
 
   dksupport.command.ticket.help.user: '${dksupport.prefix} &cInvalid usage of ticket command&8:
   &7/ticket <topic> [message]
