@@ -1,7 +1,9 @@
 package net.pretronic.dksupport.minecraft.commands.ticket;
 
 import net.pretronic.dksupport.api.DKSupport;
+import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import net.pretronic.dksupport.api.ticket.Ticket;
+import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.minecraft.commands.CommandUtil;
 import net.pretronic.dksupport.minecraft.config.Messages;
 import net.pretronic.dksupport.minecraft.config.Permissions;
@@ -48,8 +50,11 @@ public class TicketReplyCommand extends BasicCommand {
             }
             message = CommandUtil.readStringFromArguments(args, 1);
         } else {
-            ticket = CommandUtil.getSelectedTicket(dkSupport, player);
-            if(ticket == null) return;
+            ticket = dkSupport.getTicketManager().getTicketForCreator(player.getAs(DKSupportPlayer.class), TicketState.PROCESSING);
+            if(ticket == null) {
+                player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
+                return;
+            }
             message = CommandUtil.readStringFromArguments(args, 0);
         }
         ticket.sendMessage(ticket.getParticipant(player.getUniqueId()), message);
