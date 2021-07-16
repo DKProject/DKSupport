@@ -74,7 +74,7 @@ messages:
   dksupport.command.ticket.info.details: '&8» &7Creator&8: {ticket.creator.player.displayName}
   &8» &7Topic&8: &e{ticket.topic}
   &8» &7State&8: &e{ticket.state}
-  &8» &7Participants&8: @for("participant" in {participants}, ${dksupport.command.ticket.info.loop},"\n", "\n")'
+  &8» &7Participants&8: @for("participant" in {ticket.participants}, ${dksupport.command.ticket.info.loop},"\n", "\n")'
   dksupport.command.ticket.info.loop: '&8- {participant.player.displayName}'
 
   dksupport.ticket.take.creator: '${dksupport.prefix} &7Your ticket was took by {staff.displayName}'
