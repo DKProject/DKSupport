@@ -54,14 +54,16 @@ messages:
 
   &7Use the chat to replay to this ticket
   &7Enter #leave to leave this ticket
-  &7Enter #close to close this ticket'
+  &7Enter #close to close this ticket
+  &7Enter #history to show message history'
 
   dksupport.command.ticket.select: '${dksupport.prefix} &7You have selected the ticket of &e{ticket.creator.player.displayName}
   ${dksupport.command.ticket.info.details}
 
   &7Use the chat to replay to this ticket
   &7Enter #leave to leave this ticket
-  &7Enter #close to close this ticket'
+  &7Enter #close to close this ticket
+  &7Enter #history to show message history'
 
   dksupport.command.ticket.my: '${dksupport.prefix} &7My staff tickets @for("ticket" in {player.myTickets}, ${dksupport.command.ticket.my.loop},"\n", "\n")'
   dksupport.command.ticket.my.loop: ' &8- &e{ticket.creator.player.displayName} &8[&e&e{ticket.topic}&8] !["&8[&aSelect&8]"]("run:///ticket select {ticket.id}") '

@@ -58,6 +58,8 @@ public class PlayerListener {
                     player.performCommand("ticket unselect");
                 } else if(event.getMessage().equalsIgnoreCase("#close")) {
                     player.performCommand("ticket close");
+                } else if(event.getMessage().equalsIgnoreCase("#history")) {
+                    player.performCommand("ticket history");
                 } else {
                     ticket.sendMessage(participant, event.getMessage());
                 }
