@@ -7,7 +7,6 @@ meta:
     code: 'en'
 messages:
   dksupport.prefix: '&8» &eDKSupport &8|&f'
-  dksupport.prefix.ticket: '&8» &bTicket &e{sender.displayName} &8|&7'
 
   dksupport.error.ticket.notFound: '${dksupport.prefix} &cTicket &e{id} &cnot found'
   dksupport.error.ticket.topic.notFound: '${dksupport.prefix} &cTicket topic &e{name} &cnot found'
@@ -29,7 +28,7 @@ messages:
   dksupport.player.staff.status.logout: '&clogged out'
 
   dksupport.ticket.create.staff: '${dksupport.prefix} {ticket.creator.displayName} &8&l>> &e{ticket.topic} !["&8[&7Take&8]"]("run:///ticket take {ticket.id}")'
-  dksupport.ticket.message.received: '${dksupport.prefix.ticket} {message.text}'
+  dksupport.ticket.message.received: '&8» &bTicket &8| &e{sender.displayName}&8: !["&8[&7Replay&8]"]("run:///ticket replay {ticket.id}") {message.text}'
 
   dksupport.command.ticket.help.user: '${dksupport.prefix} &cInvalid usage of ticket command&8:
   &7/ticket <topic> [message]
