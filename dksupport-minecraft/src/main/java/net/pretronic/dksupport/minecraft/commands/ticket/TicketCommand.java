@@ -76,7 +76,7 @@ public class TicketCommand extends MainCommand implements NotFindable {
     @Override
     public Collection<String> complete(CommandSender sender, String[] args) {
         if(CommandUtil.isConsole(sender) || args.length == 0) return Collections.emptyList();
-        if(CommandUtil.getSelectedTicket(dkSupport, (OnlineMinecraftPlayer) sender) == null) {
+        if(CommandUtil.getSelectedTicket(dkSupport, (OnlineMinecraftPlayer) sender, false) == null) {
             String name = args[0];
             return Iterators.map(DKSupportConfig.TICKET_TOPICS
                     , TicketTopic::getName
