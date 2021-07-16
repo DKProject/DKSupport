@@ -50,7 +50,10 @@ messages:
   dksupport.command.ticket.list.loop: ' &8- &e{ticket.creator.player.displayName} &8[&e&e{ticket.topic}&8] !["&8[&aTake&8]"]("run:///ticket take {ticket.id}") '
 
   dksupport.command.ticket.take: '${dksupport.prefix} &7You have taken the ticket of &e{ticket.creator.player.displayName}
-  ${dksupport.command.ticket.info}
+  &8» &7Creator&8: {ticket.creator.player.displayName}
+  &8» &7Topic&8: &e{ticket.topic}
+  &8» &7State&8: &e{ticket.state}
+  &8» &7Participants&8: @for("participant" in {participants}, ${dksupport.command.ticket.info.loop},"\n", "\n")
 
   &7Use the chat to replay to this ticket
   &7Enter #leave to leave this ticket
