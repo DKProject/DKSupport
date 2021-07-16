@@ -64,7 +64,7 @@ messages:
   &7Enter #close to close this ticket'
 
   dksupport.command.ticket.my: '${dksupport.prefix} &7My staff tickets @for("ticket" in {player.myTickets}, ${dksupport.command.ticket.my.loop},"\n", "\n")'
-  dksupport.command.ticket.my.loop: ' &8- &e{ticket.creator.player.displayName} &8[&e&e{ticket.topic}&8] !["&8[&aSelect&8]"]("run:///ticket my {ticket.id}") '
+  dksupport.command.ticket.my.loop: ' &8- &e{ticket.creator.player.displayName} &8[&e&e{ticket.topic}&8] !["&8[&aSelect&8]"]("run:///ticket select {ticket.id}") '
 
   dksupport.command.ticket.close: '${dksupport.prefix} &7You have closed the ticket'
   dksupport.command.ticket.leave: '${dksupport.prefix} &7You have left the ticket'
