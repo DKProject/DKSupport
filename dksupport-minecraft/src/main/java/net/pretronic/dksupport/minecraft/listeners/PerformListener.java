@@ -38,8 +38,6 @@ public class PerformListener {
             TicketParticipant participant = ticket.getParticipant(connectedPlayer.getUniqueId());
             if(participant != null && participant.receiveMessages()) {
                 connectedPlayer.sendMessage(Messages.TICKET_MESSAGE_RECEIVED, VariableSet.create()
-                        .addDescribed("ticket", ticket)
-                        .addDescribed("sender", event.getParticipant())
                         .addDescribed("message", event.getMessage()));
             }
         }

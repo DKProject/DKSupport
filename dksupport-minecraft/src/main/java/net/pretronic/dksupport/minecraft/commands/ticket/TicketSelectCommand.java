@@ -22,13 +22,28 @@ public class TicketSelectCommand extends BasicCommand {
     private final DKSupport dkSupport;
 
     public TicketSelectCommand(ObjectOwner owner, DKSupport dkSupport) {
-        super(owner, CommandConfiguration.newBuilder().name("select").permission(Permissions.STAFF).create());
+        super(owner, CommandConfiguration.newBuilder().name("select").create());
         this.dkSupport = dkSupport;
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(CommandUtil.isConsole(sender)) return;
+        if(!sender.hasPermission(Permissions.STAFF)) {
+            OnlineMinecraftPlayer player = (OnlineMinecraftPlayer) sender;
+            DKSupportPlayer supportPlayer = player.getAs(DKSupportPlayer.class);
+            Ticket ticket = dkSupport.getTicketManager().getTicketForCreator(supportPlayer, TicketState.PROCESSING);
+            if(ticket == null) {
+                ticket = dkSupport.getTicketManager().getTicketForCreator(supportPlayer, TicketState.OPEN);
+            }
+            if(ticket == null) {
+                sender.sendMessage(Messages.ERROR_TICKET_NO_OPEN);
+                return;
+            }
+            CommandUtil.setSelectedTicket(player, ticket.getId());
+            player.sendMessage(Messages.COMMAND_TICKET_SELECT, VariableSet.create().addDescribed("ticket", ticket));
+            return;
+        }
         if(args.length != 1) {
             CommandUtil.sendTicketHelpMessage(sender);
             return;

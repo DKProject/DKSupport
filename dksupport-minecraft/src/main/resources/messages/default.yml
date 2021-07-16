@@ -19,6 +19,7 @@ messages:
   dksupport.error.player.notFound: '${dksupport.prefix} &cPlayer &e{name} &cnot found'
   dksupport.error.participant.already: '${dksupport.prefix} &e{participant.player.displayName} &cis already a participant of this ticket'
   dksupport.error.notStaff: '${dksupport.prefix} &cYou are not allowed to perform this action'
+  dksupport.error.ticket.noOpen: '${dksupport.prefix} &cYou have no open tickets'
 
   dksupport.player.staff.status.now: '${dksupport.prefix} &7You are {statusFormatted}'
   dksupport.player.staff.status.already: '${dksupport.prefix} &7You are already {statusFormatted}'
@@ -28,7 +29,7 @@ messages:
   dksupport.player.staff.status.logout: '&clogged out'
 
   dksupport.ticket.create.staff: '${dksupport.prefix} {ticket.creator.displayName} &8&l>> &e{ticket.topic} !["&8[&7Take&8]"]("run:///ticket take {ticket.id}")'
-  dksupport.ticket.message.received: '&8» &bTicket &8| &e{sender.displayName}&8: !["&8[&aReply&8]"]("suggest:///ticket reply ") &7{message.text}'
+  dksupport.ticket.message.received: '&8» &bTicket &8| &e{message.sender.displayName}&8: !["&8[&aReply&8]"]("suggest:///ticket reply ") &7{message.text}'
 
   dksupport.command.ticket.help.user: '${dksupport.prefix} &cInvalid usage of ticket command&8:
   &7/ticket <topic> [message]
@@ -79,3 +80,8 @@ messages:
 
   dksupport.ticket.take.creator: '${dksupport.prefix} &7Your ticket was took by {staff.displayName}'
   dksupport.ticket.take.staff: '${dksupport.prefix} &7You have took the ticket of {ticket.creator.displayName}&8. &7Type &e/ticket leave &7to leave the ticket&8.'
+
+  dksupport.command.ticket.unselect: '${dksupport.prefix} &7You have unselected your ticket'
+
+  dksupport.player.staff.joinInfo: '${dksupport.prefix} &7At the moment are &e{openTicketCount} &7tickets open&8. !["&8[&eList&8]"]("run:///ticket list")'
+  dksupport.player.user.openTicketJoinInfo: '${dksupport.prefix} &7You have one ticket open&8. !["&8[&aSelect&8]"]("run:///ticket select")'

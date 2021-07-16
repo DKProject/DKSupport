@@ -3,6 +3,7 @@ package net.pretronic.dksupport.minecraft.commands.ticket;
 import net.pretronic.dksupport.api.DKSupport;
 import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import net.pretronic.dksupport.api.ticket.Ticket;
+import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.minecraft.commands.CommandUtil;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.dksupport.minecraft.config.Messages;
@@ -43,6 +44,9 @@ public class TicketCommand extends MainCommand implements NotFindable {
         registerCommand(new TicketSelectCommand(owner, dkSupport));
         registerCommand(new TicketMyCommand(owner));
         registerCommand(new TicketInfoCommand(owner, dkSupport));
+        registerCommand(new TicketUnselectCommand(owner, dkSupport));
+        registerCommand(new TicketReplyCommand(owner, dkSupport));
+        registerCommand(new TicketHistoryCommand(owner, dkSupport));
     }
 
     @Override
@@ -59,7 +63,8 @@ public class TicketCommand extends MainCommand implements NotFindable {
         }
 
         DKSupportPlayer player = ((MinecraftPlayer)sender).getAs(DKSupportPlayer.class);
-        if(dkSupport.getTicketManager().getOpenTicketForCreator(player) != null) {
+        if(dkSupport.getTicketManager().getTicketForCreator(player, TicketState.PROCESSING) != null
+                || dkSupport.getTicketManager().getTicketForCreator(player, TicketState.OPEN) != null) {
             sender.sendMessage(Messages.ERROR_ALREADY_OPEN_TICKET);
             return;
         }

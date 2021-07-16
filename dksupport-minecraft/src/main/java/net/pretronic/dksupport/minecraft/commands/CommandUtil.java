@@ -80,14 +80,14 @@ public class CommandUtil {
             Setting setting = player.getSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
             UUID ticketId = Convert.toUUID(setting.getObjectValue());
             Ticket ticket = dkSupport.getTicketManager().getTicket(Convert.toUUID(ticketId));
-            if(ticket == null) {
+            if(ticket == null || ticket.getState() == TicketState.CLOSED) {
                 player.removeSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
-                player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
+                if(sendMessage) player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
                 return null;
             }
             if(ticket.getState() == TicketState.CLOSED) {
                 player.removeSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
-                player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
+                if(sendMessage) player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
                 return null;
             }
             return ticket;
@@ -95,5 +95,9 @@ public class CommandUtil {
             if(sendMessage) player.sendMessage(Messages.ERROR_TICKET_NOT_SELECTED);
             return null;
         }
+    }
+
+    public static void unselectTicket(MinecraftPlayer player) {
+        player.removeSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
     }
 }

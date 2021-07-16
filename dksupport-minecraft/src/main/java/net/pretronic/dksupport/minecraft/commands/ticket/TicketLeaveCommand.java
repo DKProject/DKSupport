@@ -12,6 +12,7 @@ import net.pretronic.libraries.command.command.configuration.CommandConfiguratio
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
 import java.util.UUID;
@@ -51,7 +52,7 @@ public class TicketLeaveCommand extends BasicCommand {
         if(ticket.removeParticipant(player) != null){
             sender.sendMessage(Messages.COMMAND_TICKET_LEAVE, VariableSet.create()
                     .addDescribed("ticket", ticket));
-            ((OnlineMinecraftPlayer)sender).removeSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
+            CommandUtil.unselectTicket((MinecraftPlayer) sender);
             return;
         }
     }

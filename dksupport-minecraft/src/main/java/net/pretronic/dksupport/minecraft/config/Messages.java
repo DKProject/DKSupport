@@ -17,6 +17,7 @@ public class Messages {
     public static final MessageComponent<?> ERROR_TICKET_NOT_SELECTED = Text.ofMessageKey("dksupport.error.ticket.notSelected");
     public static final MessageComponent<?> ERROR_PLAYER_NOT_FOUND = Text.ofMessageKey("dksupport.error.player.notFound");
     public static final MessageComponent<?> ERROR_NOT_STAFF = Text.ofMessageKey("dksupport.error.notStaff");
+    public static final MessageComponent<?> ERROR_TICKET_NO_OPEN = Text.ofMessageKey("dksupport.error.ticket.noOpen");
 
 
     public static MessageComponent<?> STAFF_STATUS_NOW = Text.ofMessageKey("dksupport.player.staff.status.now");
@@ -25,6 +26,9 @@ public class Messages {
     public static MessageComponent<?> STAFF_STATUS_NOT = Text.ofMessageKey("dksupport.player.staff.status.not");
     public static MessageComponent<?> STAFF_STATUS_LOGIN = Text.ofMessageKey("dksupport.player.staff.status.login");
     public static MessageComponent<?> STAFF_STATUS_LOGOUT = Text.ofMessageKey("dksupport.player.staff.status.logout");
+    public static MessageComponent<?> STAFF_JOIN_INFO = Text.ofMessageKey("dksupport.player.staff.joinInfo");
+
+    public static MessageComponent<?> USER_JOIN_INFO = Text.ofMessageKey("dksupport.player.user.openTicketJoinInfo");
 
     public static final MessageComponent<?> TICKET_CREATE_STAFF = Text.ofMessageKey("dksupport.ticket.create.staff");
     public static final MessageComponent<?> TICKET_MESSAGE_RECEIVED = Text.ofMessageKey("dksupport.ticket.message.received");
@@ -44,4 +48,5 @@ public class Messages {
     public static final MessageComponent<?> COMMAND_TICKET_ADD = Text.ofMessageKey("dksupport.command.ticket.add");
     public static final MessageComponent<?> COMMAND_TICKET_REMOVE = Text.ofMessageKey("dksupport.command.ticket.remove");
     public static final MessageComponent<?> COMMAND_TICKET_INFO = Text.ofMessageKey("dksupport.command.ticket.info");
+    public static final MessageComponent<?> COMMAND_TICKET_UNSELECT = Text.ofMessageKey("dksupport.command.ticket.unselect");
 }

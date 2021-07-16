@@ -202,9 +202,19 @@ public class DefaultTicket implements Ticket {
             throw new IllegalArgumentException("Ticket participant("+ sender.getPlayer().getId() +","+sender.getTicket().getId()
                     +") is not a participant of ticket " + getId());
         }
-        TicketMessage ticketMessage = new DefaultTicketMessage(this, sender.getPlayer(), message, System.currentTimeMillis());
+        long time = System.currentTimeMillis();
+        TicketMessage ticketMessage = new DefaultTicketMessage(this, sender.getPlayer(), message, time);
         TicketParticipantMessageEvent event = new DefaultTicketParticipantMessageEvent(this, sender, ticketMessage);
         this.dkSupport.getEventBus().callEvent(TicketParticipantMessageEvent.class, event);
+
+        this.dkSupport.getStorage().getTicketMessages().insert()
+                .set("TicketId", getId())
+                .set("SenderId", sender.getPlayer().getId())
+                .set("Message", message)
+                .set("Time", time)
+                .execute();
+
+        getMessagesOrLoad().add(ticketMessage);
 
         return ticketMessage;
     }

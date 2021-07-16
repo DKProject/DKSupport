@@ -1,6 +1,7 @@
 package net.pretronic.dksupport.minecraft.listeners;
 
 import net.pretronic.dksupport.api.DKSupport;
+import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import net.pretronic.dksupport.api.ticket.Ticket;
 import net.pretronic.dksupport.api.ticket.TicketParticipant;
 import net.pretronic.dksupport.api.ticket.TicketState;
@@ -13,6 +14,7 @@ import net.pretronic.libraries.event.Listener;
 import net.pretronic.libraries.event.execution.ExecutionType;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import org.mcnative.runtime.api.event.player.MinecraftPlayerChatEvent;
+import org.mcnative.runtime.api.event.player.MinecraftPlayerLogoutEvent;
 import org.mcnative.runtime.api.event.player.login.MinecraftPlayerPostLoginEvent;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
@@ -27,12 +29,22 @@ public class PlayerListener {
     @Listener(execution = ExecutionType.ASYNC)
     public void onJoin(MinecraftPlayerPostLoginEvent event){
         OnlineMinecraftPlayer player = event.getOnlinePlayer();
-        if(DKSupportConfig.PLAYER_ON_LOGIN_INFO && player.hasPermission(DKSupportConfig.PERMISSION_STAFF)){
-            boolean support = event.getPlayer().hasSetting("DKSupport", PlayerSettingsKey.SUPPORT,true);
-            player.sendMessage(Messages.STAFF_STATUS_NOW, VariableSet.create()
-                    .add("status",support)
-                    .add("statusFormatted", support ? Messages.STAFF_STATUS_LOGIN :  Messages.STAFF_STATUS_LOGOUT));
+        if(DKSupportConfig.PLAYER_ON_LOGIN_INFO){
+            if(player.hasPermission(DKSupportConfig.PERMISSION_STAFF)) {
+                boolean support = event.getPlayer().hasSetting("DKSupport", PlayerSettingsKey.SUPPORT,true);
+                player.sendMessage(Messages.STAFF_STATUS_NOW, VariableSet.create()
+                        .add("status",support)
+                        .add("statusFormatted", support ? Messages.STAFF_STATUS_LOGIN :  Messages.STAFF_STATUS_LOGOUT));
+                player.sendMessage(Messages.STAFF_JOIN_INFO, VariableSet.create().add("openTicketCount", dkSupport.getTicketManager().getTickets(TicketState.OPEN).size()));
+            } else if(dkSupport.getTicketManager().getTicketForCreator(player.getAs(DKSupportPlayer.class), TicketState.PROCESSING) != null) {
+                player.sendMessage(Messages.USER_JOIN_INFO);
+            }
         }
+    }
+
+    @Listener(execution = ExecutionType.ASYNC)
+    public void onLogout(MinecraftPlayerLogoutEvent event) {
+        CommandUtil.unselectTicket(event.getPlayer());
     }
 
     @Listener(priority = EventPriority.HIGH)
@@ -40,10 +52,15 @@ public class PlayerListener {
         OnlineMinecraftPlayer player = event.getOnlinePlayer();
         for (Ticket ticket : this.dkSupport.getTicketManager().getTickets(TicketState.PROCESSING)) {
             TicketParticipant participant = ticket.getParticipant(player.getUniqueId());
-            System.out.println(ticket.getId() + ":" + participant + ":" + CommandUtil.getSelectedTicket(dkSupport, player, false));
             if(participant != null && CommandUtil.getSelectedTicket(dkSupport, player, false) != null){
                 event.setCancelled(true);
-                ticket.sendMessage(participant, event.getMessage());
+                if(event.getMessage().equalsIgnoreCase("#leave")) {
+                    player.performCommand("ticket unselect");
+                } else if(event.getMessage().equalsIgnoreCase("#close")) {
+                    player.performCommand("ticket close");
+                } else {
+                    ticket.sendMessage(participant, event.getMessage());
+                }
                 break;
             }
         }
