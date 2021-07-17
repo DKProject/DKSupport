@@ -124,5 +124,12 @@
             <version>${dependency.mcnative.licensing}</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>net.pretronic.dkconnect</groupId>
+            <artifactId>dkconnect-api</artifactId>
+            <version>${dependency.dkconnect.api}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

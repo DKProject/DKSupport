@@ -6,17 +6,27 @@ import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantMes
 import net.pretronic.dksupport.api.ticket.Ticket;
 import net.pretronic.dksupport.api.ticket.TicketParticipant;
 import net.pretronic.dksupport.api.ticket.TicketState;
+import net.pretronic.dksupport.minecraft.DKSupportPlugin;
 import net.pretronic.dksupport.minecraft.PlayerSettingsKey;
+import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.dksupport.minecraft.config.Messages;
+import net.pretronic.dksupport.minecraft.integration.DKConnectIntegration;
 import net.pretronic.libraries.event.EventPriority;
 import net.pretronic.libraries.event.Listener;
 import net.pretronic.libraries.event.execution.ExecutionType;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.event.service.registry.ServiceRegisterRegistryEvent;
 import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 
 public class PerformListener {
+
+    private final DKSupportPlugin plugin;
+
+    public PerformListener(DKSupportPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     @Listener(priority = EventPriority.HIGH, execution = ExecutionType.ASYNC)
     public void onTicketCreate(TicketCreatedEvent event) {
@@ -55,6 +65,14 @@ public class PerformListener {
         MinecraftPlayer creator = McNative.getInstance().getPlayerManager().getPlayer(event.getTicket().getCreator().getPlayer().getId());
         if(creator.isOnline()) {
             creator.getAsOnlinePlayer().sendMessage(Messages.TICKET_TAKE_CREATOR, variables);
+        }
+    }
+
+    @Listener
+    public void onServiceRegister(ServiceRegisterRegistryEvent event) {
+        if(DKSupportConfig.DKCONNECT_INTEGRATION_ENABLED && event.getClass().getName().equals("net.pretronic.dkconnect.api.DKConnect")) {
+            this.plugin.getLogger().info("Enabling DKConnect integration");
+            new DKConnectIntegration((net.pretronic.dkconnect.api.DKConnect) event.getService());
         }
     }
 }
