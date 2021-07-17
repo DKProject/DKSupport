@@ -240,8 +240,8 @@ public class DefaultTicket implements Ticket {
         if(this.messages == null) {
             this.messages = new ArrayList<>();
             this.dkSupport.getStorage().getTicketMessages().find()
-                    .join(this.dkSupport.getStorage().getTicketParticipants()).on("SenderId", "Id")
-                    .where("TicketId", getId())
+                    .join(this.dkSupport.getStorage().getTicketParticipants()).on("PlayerId", "SenderId")
+                    .where(this.dkSupport.getStorage().getTicketMessages().getName()+".TicketId", getId())
                     .execute().loadIn(this.messages,  resultEntry -> new DefaultTicketMessage(this,
                     this.dkSupport.getPlayerManager().getPlayer(resultEntry.getUniqueId("SenderId")),
                     resultEntry.getString("Message"),
