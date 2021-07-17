@@ -1,5 +1,6 @@
 package net.pretronic.dksupport.minecraft.listeners;
 
+import net.pretronic.dksupport.api.DKSupport;
 import net.pretronic.dksupport.api.event.ticket.TicketCreatedEvent;
 import net.pretronic.dksupport.api.event.ticket.TicketTakeEvent;
 import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantMessageEvent;
@@ -23,9 +24,11 @@ import org.mcnative.runtime.api.player.MinecraftPlayer;
 public class PerformListener {
 
     private final DKSupportPlugin plugin;
+    private final DKSupport dkSupport;
 
-    public PerformListener(DKSupportPlugin plugin) {
+    public PerformListener(DKSupportPlugin plugin, DKSupport dkSupport) {
         this.plugin = plugin;
+        this.dkSupport = dkSupport;
     }
 
     @Listener(priority = EventPriority.HIGH, execution = ExecutionType.ASYNC)
