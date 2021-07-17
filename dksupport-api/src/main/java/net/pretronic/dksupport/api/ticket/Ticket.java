@@ -62,4 +62,6 @@ public interface Ticket {
 
 
     TicketMessage sendMessage(@NotNull TicketParticipant sender, @NotNull String message);
+
+    TicketMessage sendMessage(@NotNull String source, @NotNull TicketParticipant sender, @NotNull String message);
 }

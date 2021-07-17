@@ -7,4 +7,7 @@ public interface TicketParticipantMessageEvent extends TicketParticipantEvent {
 
     @NotNull
     TicketMessage getMessage();
+
+    @NotNull
+    String getSource();
 }

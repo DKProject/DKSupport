@@ -58,7 +58,7 @@ public class DKSupportPlugin extends MinecraftPlugin {
             try {
                 Class<?> dkconnectClass = Class.forName("net.pretronic.dkconnect.api.DKConnect");
                 getLogger().info("Enabling DKConnect integration");
-                this.dkConnectIntegration = new DKConnectIntegration(this, (net.pretronic.dkconnect.api.DKConnect) McNative.getInstance().getRegistry().getService(dkconnectClass));
+                this.dkConnectIntegration = new DKConnectIntegration(this, instance, (net.pretronic.dkconnect.api.DKConnect) McNative.getInstance().getRegistry().getService(dkconnectClass));
             } catch (ClassNotFoundException ignored) {}
         }
 

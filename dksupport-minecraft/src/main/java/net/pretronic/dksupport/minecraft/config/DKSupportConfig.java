@@ -1,5 +1,7 @@
 package net.pretronic.dksupport.minecraft.config;
 
+import net.pretronic.dkconnect.api.DKConnect;
+import net.pretronic.dkconnect.api.voiceadapter.VoiceAdapter;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.document.annotations.DocumentKey;
 
@@ -29,4 +31,11 @@ public class DKSupportConfig {
     public static String DKCONNECT_INTEGRATION_VOICEADAPTER = "1234";
     public static String DKCONNECT_INTEGRATION_CATEGORY = "1234";
     public static String DKCONNECT_INTEGRATION_CHANNEL_NAME = "{playerName}";
+    public static String DKCONNECT_INTEGRATION_EMBED_KEY = "dkconnect.voiceadapter.discord.syncChat";
+
+    public static VoiceAdapter getDKConnectIntegrationVoiceAdapter(DKConnect dkConnect) {
+        VoiceAdapter voiceAdapter = dkConnect.getVoiceAdapter(DKSupportConfig.DKCONNECT_INTEGRATION_VOICEADAPTER);
+        if(voiceAdapter == null) throw new IllegalArgumentException("Can't find voice adapter " + DKSupportConfig.DKCONNECT_INTEGRATION_VOICEADAPTER);
+        return voiceAdapter;
+    }
 }

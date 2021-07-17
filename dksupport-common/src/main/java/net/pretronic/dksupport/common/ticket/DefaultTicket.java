@@ -198,13 +198,18 @@ public class DefaultTicket implements Ticket {
 
     @Override
     public TicketMessage sendMessage(@NotNull TicketParticipant sender, @NotNull String message) {
+        return sendMessage("minecraft", sender, message);
+    }
+
+    @Override
+    public TicketMessage sendMessage(@NotNull String source, @NotNull TicketParticipant sender, @NotNull String message) {
         if(!sender.getTicket().equals(this)) {
             throw new IllegalArgumentException("Ticket participant("+ sender.getPlayer().getId() +","+sender.getTicket().getId()
                     +") is not a participant of ticket " + getId());
         }
         long time = System.currentTimeMillis();
         TicketMessage ticketMessage = new DefaultTicketMessage(this, sender.getPlayer(), message, time);
-        TicketParticipantMessageEvent event = new DefaultTicketParticipantMessageEvent(this, sender, ticketMessage);
+        TicketParticipantMessageEvent event = new DefaultTicketParticipantMessageEvent(this, sender, source, ticketMessage);
         this.dkSupport.getEventBus().callEvent(TicketParticipantMessageEvent.class, event);
 
         this.dkSupport.getStorage().getTicketMessages().insert()
