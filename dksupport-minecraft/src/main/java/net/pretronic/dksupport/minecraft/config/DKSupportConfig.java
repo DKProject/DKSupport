@@ -26,8 +26,7 @@ public class DKSupportConfig {
             new TicketTopic("3", "Ask for help"));
 
     public static boolean DKCONNECT_INTEGRATION_ENABLED = true;
-    public static String DKCONNECT_INTEGRATION_VOICE_ADAPTER = "1234";
-    public static String DKCONNECT_INTEGRATION_GUILD = "1234";
+    public static String DKCONNECT_INTEGRATION_VOICEADAPTER = "1234";
     public static String DKCONNECT_INTEGRATION_CATEGORY = "1234";
     public static String DKCONNECT_INTEGRATION_CHANNEL_NAME = "{playerName}";
 }

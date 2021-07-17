@@ -25,8 +25,8 @@ public class DKConnectIntegration {
 
     @Listener
     public void onTicketCreated(TicketCreatedEvent event) {
-        VoiceAdapter voiceAdapter = this.dkConnect.getVoiceAdapter(DKSupportConfig.DKCONNECT_INTEGRATION_VOICE_ADAPTER);
-        if(voiceAdapter == null) throw new IllegalArgumentException("Can't find voice adapter " + DKSupportConfig.DKCONNECT_INTEGRATION_VOICE_ADAPTER);
+        VoiceAdapter voiceAdapter = this.dkConnect.getVoiceAdapter(DKSupportConfig.DKCONNECT_INTEGRATION_VOICEADAPTER);
+        if(voiceAdapter == null) throw new IllegalArgumentException("Can't find voice adapter " + DKSupportConfig.DKCONNECT_INTEGRATION_VOICEADAPTER);
 
         Ticket ticket = event.getTicket();
         MinecraftPlayer creator = McNative.getInstance().getPlayerManager().getPlayer(event.getTicket().getCreator().getPlayer().getId());
