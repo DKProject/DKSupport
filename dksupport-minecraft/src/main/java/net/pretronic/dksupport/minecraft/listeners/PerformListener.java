@@ -70,7 +70,7 @@ public class PerformListener {
 
     @Listener
     public void onServiceRegister(ServiceRegisterRegistryEvent event) {
-        if(DKSupportConfig.DKCONNECT_INTEGRATION_ENABLED && event.getClass().getName().equals("net.pretronic.dkconnect.api.DKConnect")) {
+        if(DKSupportConfig.DKCONNECT_INTEGRATION_ENABLED && event.getClass().getName().equals("net.pretronic.dkconnect.api.DKConnect") && this.plugin.getDKConnectIntegration() == null) {
             this.plugin.getLogger().info("Enabling DKConnect integration");
             new DKConnectIntegration((net.pretronic.dkconnect.api.DKConnect) event.getService());
         }
