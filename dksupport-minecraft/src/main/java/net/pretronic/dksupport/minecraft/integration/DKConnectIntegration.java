@@ -8,6 +8,7 @@ import net.pretronic.dksupport.api.event.ticket.TicketCreatedEvent;
 import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantMessageEvent;
 import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import net.pretronic.dksupport.api.ticket.Ticket;
+import net.pretronic.dksupport.minecraft.DKSupportPlugin;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.libraries.event.Listener;
 import net.pretronic.libraries.utility.Validate;
@@ -18,9 +19,10 @@ public class DKConnectIntegration {
 
     private final DKConnect dkConnect;
 
-    public DKConnectIntegration(DKConnect dkConnect) {
+    public DKConnectIntegration(DKSupportPlugin plugin, DKConnect dkConnect) {
         Validate.notNull(dkConnect);
         this.dkConnect = dkConnect;
+        McNative.getInstance().getLocal().getEventBus().subscribe(plugin, this);
     }
 
     @Listener
