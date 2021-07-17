@@ -1,6 +1,7 @@
 package net.pretronic.dksupport.common.ticket;
 
 import net.pretronic.dksupport.api.event.ticket.TicketTakeEvent;
+import net.pretronic.dksupport.api.event.ticket.TicketUpdateStateEvent;
 import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantAddEvent;
 import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantMessageEvent;
 import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantRemoveEvent;
@@ -11,6 +12,7 @@ import net.pretronic.dksupport.api.ticket.TicketParticipant;
 import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.common.DefaultDKSupport;
 import net.pretronic.dksupport.common.event.ticket.DefaultTicketTakeEvent;
+import net.pretronic.dksupport.common.event.ticket.DefaultTicketUpdateStateEvent;
 import net.pretronic.dksupport.common.event.ticket.participant.DefaultTicketParticipantAddEvent;
 import net.pretronic.dksupport.common.event.ticket.participant.DefaultTicketParticipantMessageEvent;
 import net.pretronic.dksupport.common.event.ticket.participant.DefaultTicketParticipantRemoveEvent;
@@ -86,7 +88,10 @@ public class DefaultTicket implements Ticket {
                 .set("State", state)
                 .where("Id", getId())
                 .execute();
-        return true;//@Todo event
+
+        TicketUpdateStateEvent event = new DefaultTicketUpdateStateEvent(this, state);
+        this.dkSupport.getEventBus().callEvent(TicketUpdateStateEvent.class, event);
+        return true;
     }
 
     @Override
