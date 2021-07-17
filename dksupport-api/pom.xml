@@ -5,7 +5,7 @@
     <parent>
         <artifactId>DKSupport</artifactId>
         <groupId>net.pretronic.dksupport</groupId>
-        <version>1.0.37.49-SNAPSHOT</version>
+        <version>1.0.38.50-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
