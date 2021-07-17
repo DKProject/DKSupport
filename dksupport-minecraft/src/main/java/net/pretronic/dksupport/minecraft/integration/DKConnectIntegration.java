@@ -83,6 +83,7 @@ public class DKConnectIntegration {
 
     @Listener
     public void onDiscordMessage(GuildMessageReceivedEvent event) {
+        if(event.getAuthor().isBot()) return;
         for (Map.Entry<UUID, String> entry : this.ticketDiscordChannelMapping.entrySet()) {
             String channelId = entry.getValue();
             if(event.getChannel().getId().equals(channelId)) {
@@ -90,7 +91,7 @@ public class DKConnectIntegration {
                 DKConnectPlayer player = dkConnect.getPlayerManager().getPlayerByVerificationUserId(voiceAdapter, event.getAuthor().getId());
                 if(player == null) {
                     event.getMessage().delete().queue();
-                    voiceAdapter.sendMessage("", null, voiceAdapter.getMessage("dkconnect.voiceadapter.discord.notVerified"), VariableSet.create()
+                    voiceAdapter.sendMessage(channelId, null, voiceAdapter.getMessage("dkconnect.voiceadapter.discord.notVerified"), VariableSet.create()
                             .addDescribed("event", event)
                             .addDescribed("mention", event.getAuthor().getAsMention()));
                     return;
