@@ -7,10 +7,12 @@ import net.pretronic.dkconnect.api.player.Verification;
 import net.pretronic.dkconnect.api.voiceadapter.VoiceAdapter;
 import net.pretronic.dksupport.api.DKSupport;
 import net.pretronic.dksupport.api.event.ticket.TicketCreatedEvent;
+import net.pretronic.dksupport.api.event.ticket.TicketUpdateStateEvent;
 import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantMessageEvent;
 import net.pretronic.dksupport.api.ticket.Ticket;
 import net.pretronic.dksupport.api.ticket.TicketMessage;
 import net.pretronic.dksupport.api.ticket.TicketParticipant;
+import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.minecraft.DKSupportPlugin;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.libraries.event.Listener;
@@ -78,6 +80,18 @@ public class DKConnectIntegration {
                             .addDescribed("player", McNative.getInstance().getPlayerManager().getPlayer(ticketMessage.getSender().getId()).getAs(DKConnectPlayer.class))
                             .add("message", event.getMessage().getText()));
                 });
+    }
+
+    @Listener
+    public void onTicket(TicketUpdateStateEvent event) {
+        if(event.getNewState() == TicketState.CLOSED) {
+            for (Map.Entry<UUID, String> entry : this.ticketDiscordChannelMapping.entrySet()) {
+                Ticket ticket = dkSupport.getTicketManager().getTicket(entry.getKey());
+                if(ticket == null) throw new IllegalArgumentException("Can't find ticket " + entry.getKey());
+                VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
+                voiceAdapter.deleteTextChannel(entry.getValue());
+            }
+        }
     }
 
     @Listener

@@ -27,7 +27,7 @@
         <dependency.mcnative.licensing>1.0.5.8-SNAPSHOT</dependency.mcnative.licensing>
         <dependency.mcnative.buildtool>1.0.8.15-SNAPSHOT</dependency.mcnative.buildtool>
         <dependency.mcnative.loader>1.7.75.53</dependency.mcnative.loader>
-        <dependency.dkconnect.api>1.0.16.23-SNAPSHOT</dependency.dkconnect.api>
+        <dependency.dkconnect.api>1.0.19.26-SNAPSHOT</dependency.dkconnect.api>
         <dependeny.jda>4.3.0_283</dependeny.jda>
 
         <jetbrains.annotation>20.1.0</jetbrains.annotation>
