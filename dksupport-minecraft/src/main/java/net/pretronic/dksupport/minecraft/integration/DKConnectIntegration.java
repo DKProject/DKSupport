@@ -75,9 +75,8 @@ public class DKConnectIntegration {
 
                     Textable text = voiceAdapter.getMessage("dkconnect.voiceadapter.discord.syncChat");
                     voiceAdapter.sendMessage(channelId, text, VariableSet.create()
-                            .addDescribed("event", event)
                             .addDescribed("player", McNative.getInstance().getPlayerManager().getPlayer(ticketMessage.getSender().getId()).getAs(DKConnectPlayer.class))
-                            .add("message", event.getMessage()));
+                            .add("message", event.getMessage().getText()));
                 });
     }
 
