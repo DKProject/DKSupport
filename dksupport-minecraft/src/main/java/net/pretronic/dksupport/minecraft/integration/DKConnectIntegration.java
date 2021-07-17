@@ -24,6 +24,7 @@ import org.mcnative.runtime.api.player.MinecraftPlayer;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class DKConnectIntegration {
 
@@ -63,17 +64,21 @@ public class DKConnectIntegration {
     @Listener
     public void onTicketSend(TicketParticipantMessageEvent event) {
         if(event.getSource().equalsIgnoreCase("discord")) return;
-        TicketMessage ticketMessage = event.getMessage();
+        McNative.getInstance().getScheduler().createTask(McNative.getInstance())
+                .delay(1, TimeUnit.SECONDS)
+                .execute(()-> {
+                    TicketMessage ticketMessage = event.getMessage();
 
-        VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
-        String channelId = this.ticketDiscordChannelMapping.get(event.getTicket().getId());
-        if(channelId == null) throw new IllegalArgumentException("Can't retrieve discord channel id for ticket " + event.getTicket().getId());
+                    VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
+                    String channelId = this.ticketDiscordChannelMapping.get(event.getTicket().getId());
+                    if(channelId == null) throw new IllegalArgumentException("Can't retrieve discord channel id for ticket " + event.getTicket().getId());
 
-        Textable text = voiceAdapter.getMessage("dkconnect.voiceadapter.discord.syncChat");
-        voiceAdapter.sendMessage(channelId, text, VariableSet.create()
-                .addDescribed("event", event)
-                .addDescribed("player", McNative.getInstance().getPlayerManager().getPlayer(ticketMessage.getSender().getId()).getAs(DKConnectPlayer.class))
-                .add("message", event.getMessage()));
+                    Textable text = voiceAdapter.getMessage("dkconnect.voiceadapter.discord.syncChat");
+                    voiceAdapter.sendMessage(channelId, text, VariableSet.create()
+                            .addDescribed("event", event)
+                            .addDescribed("player", McNative.getInstance().getPlayerManager().getPlayer(ticketMessage.getSender().getId()).getAs(DKConnectPlayer.class))
+                            .add("message", event.getMessage()));
+                });
     }
 
     @Listener
