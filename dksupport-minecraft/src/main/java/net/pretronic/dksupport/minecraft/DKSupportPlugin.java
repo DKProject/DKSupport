@@ -47,7 +47,7 @@ public class DKSupportPlugin extends MinecraftPlugin {
         getConfiguration().load(DKSupportConfig.class);
 
         getRuntime().getLocal().getEventBus().subscribe(this,new PlayerListener(instance));
-        getRuntime().getLocal().getEventBus().subscribe(this, new PerformListener(this, dkSupport));
+        getRuntime().getLocal().getEventBus().subscribe(this, new PerformListener(this, instance));
         getRuntime().getLocal().getCommandManager().registerCommand(new TicketCommand(this,DKSupportConfig.COMMAND_TICKET, instance));
         getRuntime().getLocal().getCommandManager().registerCommand(new DKSupportCommand(this));
         getRuntime().getPlayerManager().registerPlayerAdapter(DKSupportPlayer.class, player -> instance.getPlayerManager().getPlayer(player.getUniqueId()));
