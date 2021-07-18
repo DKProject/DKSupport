@@ -3,10 +3,12 @@ package net.pretronic.dksupport.minecraft.commands.ticket;
 import net.pretronic.dksupport.api.DKSupport;
 import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import net.pretronic.dksupport.api.ticket.Ticket;
+import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.minecraft.commands.CommandUtil;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.dksupport.minecraft.config.Messages;
 import net.pretronic.dksupport.minecraft.config.TicketTopic;
+import net.pretronic.libraries.command.Completable;
 import net.pretronic.libraries.command.NotFindable;
 import net.pretronic.libraries.command.command.MainCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
@@ -15,6 +17,11 @@ import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 // ticket <topic> <message>
 public class TicketCommand extends MainCommand implements NotFindable {
@@ -37,6 +44,9 @@ public class TicketCommand extends MainCommand implements NotFindable {
         registerCommand(new TicketSelectCommand(owner, dkSupport));
         registerCommand(new TicketMyCommand(owner));
         registerCommand(new TicketInfoCommand(owner, dkSupport));
+        registerCommand(new TicketUnselectCommand(owner, dkSupport));
+        registerCommand(new TicketReplyCommand(owner, dkSupport));
+        registerCommand(new TicketHistoryCommand(owner, dkSupport));
     }
 
     @Override
@@ -53,7 +63,8 @@ public class TicketCommand extends MainCommand implements NotFindable {
         }
 
         DKSupportPlayer player = ((MinecraftPlayer)sender).getAs(DKSupportPlayer.class);
-        if(dkSupport.getTicketManager().getOpenTicketForCreator(player) != null) {
+        if(dkSupport.getTicketManager().getTicketForCreator(player, TicketState.PROCESSING) != null
+                || dkSupport.getTicketManager().getTicketForCreator(player, TicketState.OPEN) != null) {
             sender.sendMessage(Messages.ERROR_ALREADY_OPEN_TICKET);
             return;
         }
@@ -64,6 +75,19 @@ public class TicketCommand extends MainCommand implements NotFindable {
             ticket.sendMessage(ticket.getParticipant(player), message);
             sender.sendMessage(Messages.COMMAND_TICKET_CREATE, VariableSet.create()
                     .addDescribed("ticket", ticket));
+        }
+    }
+
+    @Override
+    public Collection<String> complete(CommandSender sender, String[] args) {
+        if(CommandUtil.isConsole(sender) || args.length == 0) return Collections.emptyList();
+        if(CommandUtil.getSelectedTicket(dkSupport, (OnlineMinecraftPlayer) sender, false) == null) {
+            String name = args[0];
+            return Iterators.map(DKSupportConfig.TICKET_TOPICS
+                    , TicketTopic::getName
+                    , topic -> topic.getName().toLowerCase().startsWith(name.toLowerCase()));
+        } else {
+            return super.complete(sender, args);
         }
     }
 }

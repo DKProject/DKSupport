@@ -1,6 +1,7 @@
 package net.pretronic.dksupport.common.ticket;
 
 import net.pretronic.dksupport.api.event.ticket.TicketTakeEvent;
+import net.pretronic.dksupport.api.event.ticket.TicketUpdateStateEvent;
 import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantAddEvent;
 import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantMessageEvent;
 import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantRemoveEvent;
@@ -11,6 +12,7 @@ import net.pretronic.dksupport.api.ticket.TicketParticipant;
 import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.common.DefaultDKSupport;
 import net.pretronic.dksupport.common.event.ticket.DefaultTicketTakeEvent;
+import net.pretronic.dksupport.common.event.ticket.DefaultTicketUpdateStateEvent;
 import net.pretronic.dksupport.common.event.ticket.participant.DefaultTicketParticipantAddEvent;
 import net.pretronic.dksupport.common.event.ticket.participant.DefaultTicketParticipantMessageEvent;
 import net.pretronic.dksupport.common.event.ticket.participant.DefaultTicketParticipantRemoveEvent;
@@ -86,7 +88,10 @@ public class DefaultTicket implements Ticket {
                 .set("State", state)
                 .where("Id", getId())
                 .execute();
-        return true;//@Todo event
+
+        TicketUpdateStateEvent event = new DefaultTicketUpdateStateEvent(this, state);
+        this.dkSupport.getEventBus().callEvent(TicketUpdateStateEvent.class, event);
+        return true;
     }
 
     @Override
@@ -198,13 +203,28 @@ public class DefaultTicket implements Ticket {
 
     @Override
     public TicketMessage sendMessage(@NotNull TicketParticipant sender, @NotNull String message) {
+        return sendMessage("minecraft", sender, message);
+    }
+
+    @Override
+    public TicketMessage sendMessage(@NotNull String source, @NotNull TicketParticipant sender, @NotNull String message) {
         if(!sender.getTicket().equals(this)) {
             throw new IllegalArgumentException("Ticket participant("+ sender.getPlayer().getId() +","+sender.getTicket().getId()
                     +") is not a participant of ticket " + getId());
         }
-        TicketMessage ticketMessage = new DefaultTicketMessage(this, sender.getPlayer(), message, System.currentTimeMillis());
-        TicketParticipantMessageEvent event = new DefaultTicketParticipantMessageEvent(this, sender, ticketMessage);
+        long time = System.currentTimeMillis();
+        TicketMessage ticketMessage = new DefaultTicketMessage(this, sender.getPlayer(), message, time);
+        TicketParticipantMessageEvent event = new DefaultTicketParticipantMessageEvent(this, sender, source, ticketMessage);
         this.dkSupport.getEventBus().callEvent(TicketParticipantMessageEvent.class, event);
+
+        this.dkSupport.getStorage().getTicketMessages().insert()
+                .set("TicketId", getId())
+                .set("SenderId", sender.getPlayer().getId())
+                .set("Message", message)
+                .set("Time", time)
+                .execute();
+
+        getMessagesOrLoad().add(ticketMessage);
 
         return ticketMessage;
     }
@@ -230,8 +250,8 @@ public class DefaultTicket implements Ticket {
         if(this.messages == null) {
             this.messages = new ArrayList<>();
             this.dkSupport.getStorage().getTicketMessages().find()
-                    .join(this.dkSupport.getStorage().getTicketParticipants()).on("SenderId", "Id")
-                    .where("TicketId", getId())
+                    .join(this.dkSupport.getStorage().getTicketParticipants()).on("SenderId", "PlayerId")
+                    .where(this.dkSupport.getStorage().getTicketMessages().getName()+".TicketId", getId())
                     .execute().loadIn(this.messages,  resultEntry -> new DefaultTicketMessage(this,
                     this.dkSupport.getPlayerManager().getPlayer(resultEntry.getUniqueId("SenderId")),
                     resultEntry.getString("Message"),

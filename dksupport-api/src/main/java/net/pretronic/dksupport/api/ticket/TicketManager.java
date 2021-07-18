@@ -13,7 +13,7 @@ public interface TicketManager {
     @NotNull
     Collection<Ticket> getTickets(@NotNull TicketState state);
 
-    Ticket getOpenTicketForCreator(DKSupportPlayer player);
+    Ticket getTicketForCreator(DKSupportPlayer player, TicketState state);
 
     @NotNull
     Collection<Ticket> getTickets(DKSupportPlayer player, TicketState state);

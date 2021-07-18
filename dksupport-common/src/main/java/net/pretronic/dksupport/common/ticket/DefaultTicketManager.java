@@ -54,8 +54,8 @@ public class DefaultTicketManager implements TicketManager {
     }
 
     @Override
-    public Ticket getOpenTicketForCreator(DKSupportPlayer player) {
-        return this.ticketCache.get("byCreatorId", player.getId(), TicketState.OPEN);
+    public Ticket getTicketForCreator(DKSupportPlayer player, TicketState state) {
+        return this.ticketCache.get("byCreatorId", player.getId(), state);
     }
 
     @Override

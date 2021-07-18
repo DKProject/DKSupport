@@ -33,9 +33,9 @@ public class TicketInfoCommand extends BasicCommand {
         MinecraftPlayer player = (MinecraftPlayer) sender;
         UUID ticketId = null;
         if(arguments.length == 0) {
-            Setting setting = player.getSetting("DKSupport", PlayerSettingsKey.SUPPORT);
+            Setting setting = player.getSetting("DKSupport", PlayerSettingsKey.TICKET_SELECTED);
             if(setting != null) {
-                ticketId = Convert.toUUID(setting.getObjectValue());
+                ticketId = UUID.fromString(setting.getValue());
             }
         } else {
             String rawTicketId = arguments[0];

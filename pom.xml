@@ -7,12 +7,13 @@
     <groupId>net.pretronic.dksupport</groupId>
     <artifactId>DKSupport</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0.14</version>
+    <version>1.0.38.51-BETA</version>
     <modules>
         <module>dksupport-api</module>
         <module>dksupport-common</module>
         <module>dksupport-minecraft</module>
     </modules>
+
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -26,6 +27,8 @@
         <dependency.mcnative.licensing>1.0.5.8-SNAPSHOT</dependency.mcnative.licensing>
         <dependency.mcnative.buildtool>1.0.8.15-SNAPSHOT</dependency.mcnative.buildtool>
         <dependency.mcnative.loader>1.7.75.53</dependency.mcnative.loader>
+        <dependency.dkconnect.api>1.0.19.26-SNAPSHOT</dependency.dkconnect.api>
+        <dependeny.jda>4.3.0_283</dependeny.jda>
 
         <jetbrains.annotation>20.1.0</jetbrains.annotation>
 
@@ -39,6 +42,11 @@
         <repository>
             <id>pretronic</id>
             <url>https://repository.pretronic.net/repository/pretronic/</url>
+        </repository>
+        <repository>
+            <id>dv8tion</id>
+            <name>m2-dv8tion</name>
+            <url>https://m2.dv8tion.net/releases</url>
         </repository>
     </repositories>
 

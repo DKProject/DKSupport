@@ -5,7 +5,7 @@
     <parent>
         <artifactId>DKSupport</artifactId>
         <groupId>net.pretronic.dksupport</groupId>
-        <version>1.0.0.14</version>
+        <version>1.0.38.51-BETA</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -123,6 +123,19 @@
             <artifactId>mcnative-licensing</artifactId>
             <version>${dependency.mcnative.licensing}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.pretronic.dkconnect</groupId>
+            <artifactId>dkconnect-api</artifactId>
+            <version>${dependency.dkconnect.api}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>${dependeny.jda}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

@@ -43,6 +43,6 @@ public class DescriberRegistrar {
         });
 
         VariableDescriber<DefaultTicketParticipant> participantDescriber = VariableDescriberRegistry.registerDescriber(DefaultTicketParticipant.class);
-
+        participantDescriber.setForwardFunction(participant -> dkSupport.getPlayerManager().getPlayer(participant.getPlayer().getId()));
     }
 }
