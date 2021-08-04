@@ -49,6 +49,7 @@ public class PlayerListener {
 
     @Listener(priority = EventPriority.HIGH)
     public void onChat(MinecraftPlayerChatEvent event) {
+        if(event.isCancelled()) return;
         OnlineMinecraftPlayer player = event.getOnlinePlayer();
         for (Ticket ticket : this.dkSupport.getTicketManager().getTickets(TicketState.PROCESSING)) {
             TicketParticipant participant = ticket.getParticipant(player.getUniqueId());
