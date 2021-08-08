@@ -7,7 +7,7 @@
     <groupId>net.pretronic.dksupport</groupId>
     <artifactId>DKSupport</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.38.53</version>
+    <version>1.1.2.57-BETA</version>
     <modules>
         <module>dksupport-api</module>
         <module>dksupport-common</module>
