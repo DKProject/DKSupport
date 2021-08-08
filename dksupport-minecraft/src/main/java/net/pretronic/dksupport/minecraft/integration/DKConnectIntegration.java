@@ -75,7 +75,7 @@ public class DKConnectIntegration {
                     String channelId = this.ticketDiscordChannelMapping.get(event.getTicket().getId());
                     if(channelId == null) throw new IllegalArgumentException("Can't retrieve discord channel id for ticket " + event.getTicket().getId());
 
-                    Textable text = voiceAdapter.getMessage("dkconnect.voiceadapter.discord.syncChat");
+                    Textable text = voiceAdapter.getMessage(DKSupportConfig.DKCONNECT_INTEGRATION_EMBED_KEY);
                     voiceAdapter.sendMessage(channelId, text, VariableSet.create()
                             .addDescribed("player", McNative.getInstance().getPlayerManager().getPlayer(ticketMessage.getSender().getId()).getAs(DKConnectPlayer.class))
                             .add("message", event.getMessage().getText()));
