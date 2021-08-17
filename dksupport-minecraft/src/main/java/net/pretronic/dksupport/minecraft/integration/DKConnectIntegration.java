@@ -5,6 +5,7 @@ import net.pretronic.dkconnect.api.DKConnect;
 import net.pretronic.dkconnect.api.player.DKConnectPlayer;
 import net.pretronic.dkconnect.api.player.Verification;
 import net.pretronic.dkconnect.api.voiceadapter.VoiceAdapter;
+import net.pretronic.dkconnect.api.voiceadapter.channel.TextChannel;
 import net.pretronic.dksupport.api.DKSupport;
 import net.pretronic.dksupport.api.event.ticket.TicketCreatedEvent;
 import net.pretronic.dksupport.api.event.ticket.TicketUpdateStateEvent;
@@ -16,7 +17,6 @@ import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.minecraft.DKSupportPlugin;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.libraries.event.Listener;
-import net.pretronic.libraries.message.StringTextable;
 import net.pretronic.libraries.message.Textable;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.Validate;
@@ -58,8 +58,8 @@ public class DKConnectIntegration {
         voiceAdapter.createTextChannel(DKSupportConfig.DKCONNECT_INTEGRATION_CATEGORY,
                 DKSupportConfig.DKCONNECT_INTEGRATION_CHANNEL_NAME.replace("{ticketId}", ticket.getId().toString()).replace("{playerName}", creator.getName()),
                 null,
-                allowedUserIds).thenAccept(channelId -> {
-                    this.ticketDiscordChannelMapping.put(ticket.getId(), channelId);
+                allowedUserIds).thenAccept(channel -> {
+                    this.ticketDiscordChannelMapping.put(ticket.getId(), channel.getId());
         });
     }
 
@@ -76,7 +76,8 @@ public class DKConnectIntegration {
                     if(channelId == null) throw new IllegalArgumentException("Can't retrieve discord channel id for ticket " + event.getTicket().getId());
 
                     Textable text = voiceAdapter.getMessage(DKSupportConfig.DKCONNECT_INTEGRATION_EMBED_KEY);
-                    voiceAdapter.sendMessage(channelId, text, VariableSet.create()
+                    TextChannel channel = voiceAdapter.getTextChannel(channelId);
+                    channel.sendMessage(text, VariableSet.create()
                             .addDescribed("player", McNative.getInstance().getPlayerManager().getPlayer(ticketMessage.getSender().getId()).getAs(DKConnectPlayer.class))
                             .add("message", event.getMessage().getText()));
                 });
@@ -89,7 +90,7 @@ public class DKConnectIntegration {
                 Ticket ticket = dkSupport.getTicketManager().getTicket(entry.getKey());
                 if(ticket == null) throw new IllegalArgumentException("Can't find ticket " + entry.getKey());
                 VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
-                voiceAdapter.deleteTextChannel(entry.getValue());
+                voiceAdapter.getTextChannel(entry.getValue()).delete();
             }
         }
     }
@@ -104,7 +105,7 @@ public class DKConnectIntegration {
                 DKConnectPlayer player = dkConnect.getPlayerManager().getPlayerByVerificationUserId(voiceAdapter, event.getAuthor().getId());
                 if(player == null) {
                     event.getMessage().delete().queue();
-                    voiceAdapter.sendMessage(channelId, null, voiceAdapter.getMessage("dkconnect.voiceadapter.discord.notVerified"), VariableSet.create()
+                    voiceAdapter.getTextChannel(channelId).sendMessage(voiceAdapter.getMessage("dkconnect.voiceadapter.discord.notVerified"), VariableSet.create()
                             .addDescribed("event", event)
                             .addDescribed("mention", event.getAuthor().getAsMention()));
                     return;
