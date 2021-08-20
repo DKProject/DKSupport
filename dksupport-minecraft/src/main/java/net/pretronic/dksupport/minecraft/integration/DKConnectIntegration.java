@@ -15,31 +15,76 @@ import net.pretronic.dksupport.api.ticket.TicketMessage;
 import net.pretronic.dksupport.api.ticket.TicketParticipant;
 import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.minecraft.DKSupportPlugin;
+import net.pretronic.dksupport.minecraft.PluginSettingsKey;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.libraries.event.Listener;
 import net.pretronic.libraries.message.Textable;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.utility.StringUtil;
 import net.pretronic.libraries.utility.Validate;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.*;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public class DKConnectIntegration {
 
+    private final DKSupportPlugin plugin;
     private final DKSupport dkSupport;
     private final DKConnect dkConnect;
     private final Map<UUID, String> ticketDiscordChannelMapping;
 
     public DKConnectIntegration(DKSupportPlugin plugin, DKSupport dkSupport, DKConnect dkConnect) {
+        Validate.notNull(plugin, dkSupport, dkConnect);
+        this.plugin = plugin;
         this.dkSupport = dkSupport;
-        Validate.notNull(dkConnect);
         this.dkConnect = dkConnect;
         this.ticketDiscordChannelMapping = new ConcurrentHashMap<>();
+
         McNative.getInstance().getLocal().getEventBus().subscribe(plugin, this);
+
+        initMessages();
+    }
+
+    private void initMessages() {
+        importMessages();
+        initTicketCreateMessage();
+    }
+
+    private void importMessages() {
+        VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
+        for (Iterator<Path> iterator = getDirectoryFiles("/dkconnect-integration/messages").iterator(); iterator.hasNext();){
+            Path child = iterator.next();
+            if(Files.isRegularFile(child)) {
+                voiceAdapter.importMessage(StringUtil.split(child.getFileName().toString(), '.')[0],
+                        DKSupportPlugin.class.getResourceAsStream(child.toString()));
+            }
+        }
+    }
+
+    private void initTicketCreateMessage() {
+        if(!plugin.hasSetting(PluginSettingsKey.TICKET_CREATE_MESSAGE_ID)) {
+            String channelId = DKSupportConfig.DKCONNECT_INTEGRATION_TICKET_CREATE_CHANNEL_ID;
+            try {
+                VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
+                TextChannel channel = voiceAdapter.getTextChannel(channelId);
+                channel.sendMessage(voiceAdapter.getMessage(DKConnectIntegrationMessages.TICKET_CREATE), VariableSet.create()).thenAccept(message -> {
+                    plugin.getLogger().info("Successful sent ticket create message");
+                });
+            } catch (IllegalArgumentException exception) {
+                throw new IllegalArgumentException("Can't create ticket create message for channelId " + channelId, exception);
+            }
+        }
     }
 
     @Listener
@@ -120,5 +165,34 @@ public class DKConnectIntegration {
                 ticket.sendMessage("discord", participant, event.getMessage().getContentRaw());
             }
         }
+    }
+
+    private Stream<Path> getDirectoryFiles(String folder) {
+        URI uri = null;
+        try {
+            uri = DKSupportPlugin.class.getResource(folder).toURI();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        Path path;
+        if (uri.getScheme().equals("jar")) {
+            FileSystem fileSystem;
+            try {
+                fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
+            } catch (IOException e) {
+                throw new RuntimeException("Can't get file system for folder " + folder, e);
+            }
+            path = fileSystem.getPath(folder);
+        } else {
+            path = Paths.get(uri);
+        }
+        Stream<Path> walk;
+        try {
+            walk = Files.walk(path, 1);
+        } catch (IOException e) {
+            throw new RuntimeException("Can't get stream for folder " + folder, e);
+        }
+        return walk;
     }
 }

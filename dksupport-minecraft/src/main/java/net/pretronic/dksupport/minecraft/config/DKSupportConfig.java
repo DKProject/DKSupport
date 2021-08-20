@@ -32,6 +32,7 @@ public class DKSupportConfig {
     public static String DKCONNECT_INTEGRATION_CATEGORY = "1234";
     public static String DKCONNECT_INTEGRATION_CHANNEL_NAME = "{playerName}";
     public static String DKCONNECT_INTEGRATION_EMBED_KEY = "dkconnect.voiceadapter.discord.syncChat";
+    public static String DKCONNECT_INTEGRATION_TICKET_CREATE_CHANNEL_ID = "dksupport.ticket.create";
 
     public static VoiceAdapter getDKConnectIntegrationVoiceAdapter(DKConnect dkConnect) {
         VoiceAdapter voiceAdapter = dkConnect.getVoiceAdapter(DKSupportConfig.DKCONNECT_INTEGRATION_VOICEADAPTER);
