@@ -63,7 +63,9 @@ public class DKConnectIntegration {
 
     private void importMessages() {
         VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
-        for (Iterator<Path> iterator = getDirectoryFiles("/dkconnect-integration/messages").iterator(); iterator.hasNext();){
+        Stream<Path> walk = getDirectoryFiles("/dkconnect-integration/messages");
+        if(walk == null) return;
+        for (Iterator<Path> iterator = walk.iterator(); iterator.hasNext();){
             Path child = iterator.next();
             if(Files.isRegularFile(child)) {
                 voiceAdapter.importMessage(StringUtil.split(child.getFileName().toString(), '.')[0].replace("-", "."),
@@ -172,7 +174,7 @@ public class DKConnectIntegration {
         try {
             uri = DKSupportPlugin.class.getResource(folder).toURI();
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            return null;
         }
 
         Path path;
