@@ -28,6 +28,7 @@ import org.mcnative.runtime.api.player.MinecraftPlayer;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.*;
 import java.util.Collections;
 import java.util.Iterator;
@@ -172,7 +173,9 @@ public class DKConnectIntegration {
     private Stream<Path> getDirectoryFiles(String folder) {
         URI uri = null;
         try {
-            uri = DKSupportPlugin.class.getResource(folder).toURI();
+            URL url = DKSupportPlugin.class.getResource(folder);
+            if(url == null) return null;
+            uri = url.toURI();
         } catch (URISyntaxException e) {
             return null;
         }
