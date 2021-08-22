@@ -66,7 +66,7 @@ public class DKConnectIntegration {
         for (Iterator<Path> iterator = getDirectoryFiles("/dkconnect-integration/messages").iterator(); iterator.hasNext();){
             Path child = iterator.next();
             if(Files.isRegularFile(child)) {
-                voiceAdapter.importMessage(StringUtil.split(child.getFileName().toString(), '.')[0],
+                voiceAdapter.importMessage(StringUtil.split(child.getFileName().toString(), '.')[0].replace("-", "."),
                         DKSupportPlugin.class.getResourceAsStream(child.toString()));
             }
         }
