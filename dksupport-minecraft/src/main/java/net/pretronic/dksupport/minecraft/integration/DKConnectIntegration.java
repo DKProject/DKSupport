@@ -63,7 +63,7 @@ public class DKConnectIntegration {
     }
 
     private void importMessages() {
-        VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
+        VoiceAdapter voiceAdapter = getDKConnectIntegrationVoiceAdapter(dkConnect);
         Stream<Path> walk = getDirectoryFiles("/dkconnect-integration/messages");
         if(walk == null) return;
         for (Iterator<Path> iterator = walk.iterator(); iterator.hasNext();){
@@ -79,7 +79,7 @@ public class DKConnectIntegration {
         if(!plugin.hasSetting(PluginSettingsKey.TICKET_CREATE_MESSAGE_ID)) {
             String channelId = DKSupportConfig.DKCONNECT_INTEGRATION_TICKET_CREATE_CHANNEL_ID;
             try {
-                VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
+                VoiceAdapter voiceAdapter = getDKConnectIntegrationVoiceAdapter(dkConnect);
                 TextChannel channel = voiceAdapter.getTextChannel(channelId);
                 channel.sendMessage(voiceAdapter.getMessage(DKConnectIntegrationMessages.TICKET_CREATE), VariableSet.create()).thenAccept(message -> {
                     plugin.getLogger().info("Successful sent ticket create message");
@@ -90,9 +90,15 @@ public class DKConnectIntegration {
         }
     }
 
+    public static VoiceAdapter getDKConnectIntegrationVoiceAdapter(DKConnect dkConnect) {
+        VoiceAdapter voiceAdapter = dkConnect.getVoiceAdapter(DKSupportConfig.DKCONNECT_INTEGRATION_VOICEADAPTER);
+        if(voiceAdapter == null) throw new IllegalArgumentException("Can't find voice adapter " + DKSupportConfig.DKCONNECT_INTEGRATION_VOICEADAPTER);
+        return voiceAdapter;
+    }
+
     @Listener
     public void onTicketCreated(TicketCreatedEvent event) {
-        VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
+        VoiceAdapter voiceAdapter = getDKConnectIntegrationVoiceAdapter(dkConnect);
 
         Ticket ticket = event.getTicket();
         MinecraftPlayer creator = McNative.getInstance().getPlayerManager().getPlayer(event.getTicket().getCreator().getPlayer().getId());
@@ -119,7 +125,7 @@ public class DKConnectIntegration {
                 .execute(()-> {
                     TicketMessage ticketMessage = event.getMessage();
 
-                    VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
+                    VoiceAdapter voiceAdapter = getDKConnectIntegrationVoiceAdapter(dkConnect);
                     String channelId = this.ticketDiscordChannelMapping.get(event.getTicket().getId());
                     if(channelId == null) throw new IllegalArgumentException("Can't retrieve discord channel id for ticket " + event.getTicket().getId());
 
@@ -137,7 +143,7 @@ public class DKConnectIntegration {
             for (Map.Entry<UUID, String> entry : this.ticketDiscordChannelMapping.entrySet()) {
                 Ticket ticket = dkSupport.getTicketManager().getTicket(entry.getKey());
                 if(ticket == null) throw new IllegalArgumentException("Can't find ticket " + entry.getKey());
-                VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
+                VoiceAdapter voiceAdapter = getDKConnectIntegrationVoiceAdapter(dkConnect);
                 voiceAdapter.getTextChannel(entry.getValue()).delete();
             }
         }
@@ -149,7 +155,7 @@ public class DKConnectIntegration {
         for (Map.Entry<UUID, String> entry : this.ticketDiscordChannelMapping.entrySet()) {
             String channelId = entry.getValue();
             if(event.getChannel().getId().equals(channelId)) {
-                VoiceAdapter voiceAdapter = DKSupportConfig.getDKConnectIntegrationVoiceAdapter(dkConnect);
+                VoiceAdapter voiceAdapter = getDKConnectIntegrationVoiceAdapter(dkConnect);
                 DKConnectPlayer player = dkConnect.getPlayerManager().getPlayerByVerificationUserId(voiceAdapter, event.getAuthor().getId());
                 if(player == null) {
                     event.getMessage().delete().queue();
