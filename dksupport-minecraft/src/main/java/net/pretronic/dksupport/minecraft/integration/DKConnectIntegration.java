@@ -98,7 +98,7 @@ public class DKConnectIntegration {
                             for (TicketTopic topic : DKSupportConfig.TICKET_TOPICS) {
                                 Emoji emoji = topic.getDiscordEmoji(voiceAdapter);
                                 if(event.getEmoji().equals(emoji)) {
-                                    System.out.println("Reaction add " + ticketTopic.getName());
+                                    System.out.println("Reaction add " + topic.getName());
                                     break;
                                 }
                             }
