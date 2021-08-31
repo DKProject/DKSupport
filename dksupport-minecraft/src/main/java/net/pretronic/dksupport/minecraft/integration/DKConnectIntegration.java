@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.pretronic.dkconnect.api.DKConnect;
 import net.pretronic.dkconnect.api.player.DKConnectPlayer;
 import net.pretronic.dkconnect.api.player.Verification;
+import net.pretronic.dkconnect.api.voiceadapter.Emoji;
 import net.pretronic.dkconnect.api.voiceadapter.VoiceAdapter;
 import net.pretronic.dkconnect.api.voiceadapter.channel.TextChannel;
 import net.pretronic.dksupport.api.DKSupport;
@@ -86,10 +87,18 @@ public class DKConnectIntegration {
                     plugin.getLogger().info("Successful sent ticket create message");
 
                     for (TicketTopic ticketTopic : DKSupportConfig.TICKET_TOPICS) {
+                        Emoji emoji = ticketTopic.getDiscordEmoji(voiceAdapter);
+
                         plugin.getLogger().info("Adding emoji ("+ticketTopic.getDiscordEmoji()+") to ticket create message");
-                        message.addReaction(ticketTopic.getDiscordEmoji(voiceAdapter)).thenAccept(success -> {
+                        message.addReaction(emoji).thenAccept(success -> {
                             if(success) plugin.getLogger().info("Successfully added emoji ("+ticketTopic.getDiscordEmoji()+") to ticket create message");
                             else plugin.getLogger().info("Failed adding emoji ("+ticketTopic.getDiscordEmoji()+") to ticket create message");
+                        });
+                        message.onReactionAdd(event -> {
+                            System.out.println("Reaction add" + emoji.toString());
+                            if(event.getEmoji().equals(emoji)) {
+                                System.out.println("Reaction add " + ticketTopic.getName());
+                            }
                         });
                     }
                 });
