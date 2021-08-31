@@ -86,7 +86,11 @@ public class DKConnectIntegration {
                     plugin.getLogger().info("Successful sent ticket create message");
 
                     for (TicketTopic ticketTopic : DKSupportConfig.TICKET_TOPICS) {
-                        message.addReaction(ticketTopic.getDiscordEmoji(voiceAdapter));
+                        plugin.getLogger().info("Adding emoji ("+ticketTopic.getDiscordEmoji()+") to ticket create message");
+                        message.addReaction(ticketTopic.getDiscordEmoji(voiceAdapter)).thenAccept(success -> {
+                            if(success) plugin.getLogger().info("Successfully added emoji ("+ticketTopic.getDiscordEmoji()+") to ticket create message");
+                            else plugin.getLogger().info("Failed adding emoji ("+ticketTopic.getDiscordEmoji()+") to ticket create message");
+                        });
                     }
                 });
             } catch (IllegalArgumentException exception) {
