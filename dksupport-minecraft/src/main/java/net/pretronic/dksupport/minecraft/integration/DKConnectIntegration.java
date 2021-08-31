@@ -94,11 +94,13 @@ public class DKConnectIntegration {
                             else plugin.getLogger().info("Failed adding emoji ("+ticketTopic.getDiscordEmoji()+") to ticket create message");
                         });
                         message.onReactionAdd(event -> {
+                            if(event.getUser().isSystem()) return;
                             System.out.println("Reaction add" + event.getEmoji().toString());
                             for (TicketTopic topic : DKSupportConfig.TICKET_TOPICS) {
                                 Emoji emoji = topic.getDiscordEmoji(voiceAdapter);
                                 if(event.getEmoji().equals(emoji)) {
                                     System.out.println("Reaction add " + topic.getName());
+                                    event.removeReaction();
                                     break;
                                 }
                             }
