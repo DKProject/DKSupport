@@ -20,9 +20,9 @@ public class DKSupportConfig {
     public static String PERMISSION_STAFF = "dksupport.staff";
 
     public static Collection<TicketTopic> TICKET_TOPICS = Arrays.asList(
-            new TicketTopic("1", "Bug report", "pencil", "bug", "bugs"),
-            new TicketTopic("2", "Question", "question"),
-            new TicketTopic("3", "Ask for help", "bookmark_tabs"));
+            new TicketTopic("1", "Bug report", "\uD83D\uDCDD", "bug", "bugs"),
+            new TicketTopic("2", "Question", "❓"),
+            new TicketTopic("3", "Ask for help", "\uD83D\uDCD1"));
 
     public static boolean DKCONNECT_INTEGRATION_ENABLED = true;
     public static String DKCONNECT_INTEGRATION_VOICEADAPTER = "1234";
