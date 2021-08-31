@@ -17,6 +17,7 @@ import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.minecraft.DKSupportPlugin;
 import net.pretronic.dksupport.minecraft.PluginSettingsKey;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
+import net.pretronic.dksupport.minecraft.config.TicketTopic;
 import net.pretronic.libraries.event.Listener;
 import net.pretronic.libraries.message.Textable;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
@@ -83,6 +84,10 @@ public class DKConnectIntegration {
                 TextChannel channel = voiceAdapter.getTextChannel(channelId);
                 channel.sendMessage(voiceAdapter.getMessage(DKConnectIntegrationMessages.TICKET_CREATE), VariableSet.create()).thenAccept(message -> {
                     plugin.getLogger().info("Successful sent ticket create message");
+
+                    for (TicketTopic ticketTopic : DKSupportConfig.TICKET_TOPICS) {
+                        message.addReaction(ticketTopic.getDiscordEmoji(voiceAdapter));
+                    }
                 });
             } catch (IllegalArgumentException exception) {
                 throw new IllegalArgumentException("Can't create ticket create message for channelId " + channelId, exception);
