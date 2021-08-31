@@ -6,11 +6,13 @@ import net.pretronic.dkconnect.api.player.DKConnectPlayer;
 import net.pretronic.dkconnect.api.player.Verification;
 import net.pretronic.dkconnect.api.voiceadapter.Emoji;
 import net.pretronic.dkconnect.api.voiceadapter.VoiceAdapter;
+import net.pretronic.dkconnect.api.voiceadapter.VoiceAdapterUser;
 import net.pretronic.dkconnect.api.voiceadapter.channel.TextChannel;
 import net.pretronic.dksupport.api.DKSupport;
 import net.pretronic.dksupport.api.event.ticket.TicketCreatedEvent;
 import net.pretronic.dksupport.api.event.ticket.TicketUpdateStateEvent;
 import net.pretronic.dksupport.api.event.ticket.participant.TicketParticipantMessageEvent;
+import net.pretronic.dksupport.api.player.DKSupportPlayer;
 import net.pretronic.dksupport.api.ticket.Ticket;
 import net.pretronic.dksupport.api.ticket.TicketMessage;
 import net.pretronic.dksupport.api.ticket.TicketParticipant;
@@ -95,12 +97,17 @@ public class DKConnectIntegration {
                         });
                         message.onReactionAdd(event -> {
                             if(event.getUser().isSystem()) return;
-                            System.out.println("Reaction add" + event.getEmoji().toString());
+                            event.removeReaction();
                             for (TicketTopic topic : DKSupportConfig.TICKET_TOPICS) {
                                 Emoji emoji = topic.getDiscordEmoji(voiceAdapter);
                                 if(event.getEmoji().equals(emoji)) {
-                                    System.out.println("Reaction add " + topic.getName());
-                                    event.removeReaction();
+                                    VoiceAdapterUser user = event.getUser();
+                                    if(user.getVerification() == null) {
+                                        System.out.println("Not verified");
+                                        return;
+                                    }
+                                    DKSupportPlayer player = this.dkSupport.getPlayerManager().getPlayer(user.getPlayer().getId());
+                                    this.dkSupport.getTicketManager().createTicket(player, ticketTopic.getDisplayName());
                                     break;
                                 }
                             }
