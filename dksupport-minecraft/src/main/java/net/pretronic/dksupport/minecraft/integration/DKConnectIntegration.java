@@ -103,7 +103,7 @@ public class DKConnectIntegration {
                                 if(event.getEmoji().equals(emoji)) {
                                     VoiceAdapterUser user = event.getUser();
                                     if(user.getVerification() == null) {
-                                        System.out.println("Not verified");
+                                        voiceAdapter.sendPrivateMessage(user.getVerification(), voiceAdapter.getMessage("dkconnect.voiceadapter.discord.notVerified"), VariableSet.create());
                                         return;
                                     }
                                     DKSupportPlayer player = this.dkSupport.getPlayerManager().getPlayer(user.getPlayer().getId());
