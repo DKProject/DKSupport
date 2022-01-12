@@ -5,6 +5,7 @@ import net.pretronic.dkconnect.api.DKConnect;
 import net.pretronic.dkconnect.api.player.DKConnectPlayer;
 import net.pretronic.dkconnect.api.player.Verification;
 import net.pretronic.dkconnect.api.voiceadapter.Emoji;
+import net.pretronic.dkconnect.api.voiceadapter.Message;
 import net.pretronic.dkconnect.api.voiceadapter.VoiceAdapter;
 import net.pretronic.dkconnect.api.voiceadapter.VoiceAdapterUser;
 import net.pretronic.dkconnect.api.voiceadapter.channel.TextChannel;
@@ -80,11 +81,12 @@ public class DKConnectIntegration {
     }
 
     private void initTicketCreateMessage() {
+        String channelId = DKSupportConfig.DKCONNECT_INTEGRATION_TICKET_CREATE_CHANNEL_ID;
+        VoiceAdapter voiceAdapter = getDKConnectIntegrationVoiceAdapter(dkConnect);
+        TextChannel channel = voiceAdapter.getTextChannel(channelId);
+
         if(!plugin.hasSetting(PluginSettingsKey.TICKET_CREATE_MESSAGE_ID)) {
-            String channelId = DKSupportConfig.DKCONNECT_INTEGRATION_TICKET_CREATE_CHANNEL_ID;
             try {
-                VoiceAdapter voiceAdapter = getDKConnectIntegrationVoiceAdapter(dkConnect);
-                TextChannel channel = voiceAdapter.getTextChannel(channelId);
                 channel.sendMessage(voiceAdapter.getMessage(DKConnectIntegrationMessages.TICKET_CREATE), VariableSet.create()).thenAccept(message -> {
                     plugin.getLogger().info("Successful sent ticket create message");
                     plugin.setSetting(PluginSettingsKey.TICKET_CREATE_MESSAGE_ID, message.getId());
@@ -95,29 +97,36 @@ public class DKConnectIntegration {
                             if(success) plugin.getLogger().info("Successfully added emoji ("+ticketTopic.getDiscordEmoji()+") to ticket create message");
                             else plugin.getLogger().info("Failed adding emoji ("+ticketTopic.getDiscordEmoji()+") to ticket create message");
                         });
-                        message.onReactionAdd(event -> {
-                            if(event.getUser().isSystem()) return;
-                            event.removeReaction();
-                            for (TicketTopic topic : DKSupportConfig.TICKET_TOPICS) {
-                                Emoji emoji = topic.getDiscordEmoji(voiceAdapter);
-                                if(event.getEmoji().equals(emoji)) {
-                                    VoiceAdapterUser user = event.getUser();
-                                    if(user.getVerification() == null) {
-                                        voiceAdapter.sendPrivateMessage(user.getVerification(), voiceAdapter.getMessage("dkconnect.voiceadapter.discord.notVerified"), VariableSet.create());
-                                        return;
-                                    }
-                                    DKSupportPlayer player = this.dkSupport.getPlayerManager().getPlayer(user.getPlayer().getId());
-                                    this.dkSupport.getTicketManager().createTicket(player, ticketTopic.getDisplayName());
-                                    break;
-                                }
-                            }
-                        });
+
                     }
                 });
             } catch (IllegalArgumentException exception) {
                 throw new IllegalArgumentException("Can't create ticket create message for channelId " + channelId, exception);
             }
         }
+
+        String createMessageId = plugin.getSetting(PluginSettingsKey.TICKET_CREATE_MESSAGE_ID).getValue();
+        channel.getMessage(createMessageId).thenAccept(message -> addMessageReactionListener(voiceAdapter, message));
+    }
+
+    private void addMessageReactionListener(VoiceAdapter voiceAdapter, Message message) {
+        message.onReactionAdd(event -> {
+            if(event.getUser().isSystem()) return;
+            event.removeReaction();
+            for (TicketTopic topic : DKSupportConfig.TICKET_TOPICS) {
+                Emoji emoji = topic.getDiscordEmoji(voiceAdapter);
+                if(event.getEmoji().equals(emoji)) {
+                    VoiceAdapterUser user = event.getUser();
+                    if(user.getVerification() == null) {
+                        voiceAdapter.sendPrivateMessage(user.getVerification(), voiceAdapter.getMessage("dkconnect.voiceadapter.discord.notVerified"), VariableSet.create());
+                        return;
+                    }
+                    DKSupportPlayer player = this.dkSupport.getPlayerManager().getPlayer(user.getPlayer().getId());
+                    this.dkSupport.getTicketManager().createTicket(player, topic.getDisplayName());
+                    break;
+                }
+            }
+        });
     }
 
     public static VoiceAdapter getDKConnectIntegrationVoiceAdapter(DKConnect dkConnect) {
