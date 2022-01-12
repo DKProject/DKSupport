@@ -71,7 +71,6 @@ public class TicketCommand extends MainCommand implements NotFindable {
         String message = CommandUtil.readStringFromArguments(args, 0);
         Ticket ticket = this.dkSupport.getTicketManager().createTicket(player, ticketTopic.getDisplayName());
         if(ticket != null) {
-            CommandUtil.setSelectedTicket((MinecraftPlayer) sender, ticket.getId());
             ticket.sendMessage(ticket.getParticipant(player), message);
             sender.sendMessage(Messages.COMMAND_TICKET_CREATE, VariableSet.create()
                     .addDescribed("ticket", ticket));
