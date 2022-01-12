@@ -44,11 +44,11 @@ public class DefaultTicketManager implements TicketManager {
     }
 
     @Override
-    public @NotNull Collection<Ticket> getTickets(@NotNull TicketState state) {
+    public @NotNull Collection<Ticket> getTickets(@NotNull TicketState... states) {
         Collection<Ticket> tickets = new ArrayList<>();
         this.dkSupport.getStorage().getTickets().find()
                 .get("Id")
-                .where("State", state)
+                .whereIn("State", states)
                 .execute().loadIn(tickets, resultEntry -> getTicket(resultEntry.getUniqueId("Id")));
         return tickets;
     }

@@ -11,7 +11,7 @@ public interface TicketManager {
     Ticket getTicket(UUID id);
 
     @NotNull
-    Collection<Ticket> getTickets(@NotNull TicketState state);
+    Collection<Ticket> getTickets(@NotNull TicketState... states);
 
     Ticket getTicketForCreator(DKSupportPlayer player, TicketState state);
 
