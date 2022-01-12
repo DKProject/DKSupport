@@ -37,7 +37,7 @@ public class DefaultTicket implements Ticket {
         this(dkSupport, UUID.randomUUID(), topic, TicketState.OPEN, System.currentTimeMillis(), creatorId);
     }
 
-    public DefaultTicket(@NotNull DefaultDKSupport dkSupport, @NotNull UUID id, String topic, @NotNull TicketState state, long created, UUID creatorId) {
+    public DefaultTicket(@NotNull DefaultDKSupport dkSupport, @NotNull UUID id, String topic, @NotNull TicketState state, long created, @NotNull UUID creatorId) {
         this.dkSupport = dkSupport;
         this.id = id;
         this.topic = topic;
@@ -57,7 +57,7 @@ public class DefaultTicket implements Ticket {
     }
 
     @Override
-    public TicketParticipant getCreator() {
+    public @NotNull TicketParticipant getCreator() {
         return getParticipant(this.creatorId);
     }
 
@@ -241,7 +241,7 @@ public class DefaultTicket implements Ticket {
                                 resultEntry.getBoolean("Hidden"),
                                 resultEntry.getLong("Joined"),
                                 resultEntry.getBoolean("ReceiveMessages"));
-            });
+                    });
         }
         return this.participants;
     }
@@ -253,9 +253,9 @@ public class DefaultTicket implements Ticket {
                     .join(this.dkSupport.getStorage().getTicketParticipants()).on("SenderId", "PlayerId")
                     .where(this.dkSupport.getStorage().getTicketMessages().getName()+".TicketId", getId())
                     .execute().loadIn(this.messages,  resultEntry -> new DefaultTicketMessage(this,
-                    this.dkSupport.getPlayerManager().getPlayer(resultEntry.getUniqueId("SenderId")),
-                    resultEntry.getString("Message"),
-                    resultEntry.getLong("Time")));
+                            this.dkSupport.getPlayerManager().getPlayer(resultEntry.getUniqueId("SenderId")),
+                            resultEntry.getString("Message"),
+                            resultEntry.getLong("Time")));
         }
         return this.messages;
     }

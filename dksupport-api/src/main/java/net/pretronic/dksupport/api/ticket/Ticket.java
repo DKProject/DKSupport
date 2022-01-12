@@ -16,6 +16,7 @@ public interface Ticket {
     long getCreated();
 
 
+    @NotNull
     TicketParticipant getCreator();
 
 
