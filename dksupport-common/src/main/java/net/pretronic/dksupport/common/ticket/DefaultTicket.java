@@ -37,7 +37,7 @@ public class DefaultTicket implements Ticket {
         this(dkSupport, UUID.randomUUID(), topic, TicketState.OPEN, System.currentTimeMillis(), creatorId);
     }
 
-    public DefaultTicket(@NotNull DefaultDKSupport dkSupport, @NotNull UUID id, String topic, @NotNull TicketState state, long created, UUID creatorId) {
+    public DefaultTicket(@NotNull DefaultDKSupport dkSupport, @NotNull UUID id, String topic, @NotNull TicketState state, long created, @NotNull UUID creatorId) {
         this.dkSupport = dkSupport;
         this.id = id;
         this.topic = topic;
@@ -57,7 +57,7 @@ public class DefaultTicket implements Ticket {
     }
 
     @Override
-    public TicketParticipant getCreator() {
+    public @NotNull TicketParticipant getCreator() {
         return getParticipant(this.creatorId);
     }
 
