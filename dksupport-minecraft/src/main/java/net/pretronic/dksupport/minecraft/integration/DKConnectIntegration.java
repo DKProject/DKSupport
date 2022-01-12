@@ -87,7 +87,7 @@ public class DKConnectIntegration {
                 TextChannel channel = voiceAdapter.getTextChannel(channelId);
                 channel.sendMessage(voiceAdapter.getMessage(DKConnectIntegrationMessages.TICKET_CREATE), VariableSet.create()).thenAccept(message -> {
                     plugin.getLogger().info("Successful sent ticket create message");
-
+                    plugin.setSetting(PluginSettingsKey.TICKET_CREATE_MESSAGE_ID, message.getId());
                     for (TicketTopic ticketTopic : DKSupportConfig.TICKET_TOPICS) {
 
                         plugin.getLogger().info("Adding emoji ("+ticketTopic.getDiscordEmoji()+") to ticket create message");
