@@ -106,7 +106,10 @@ public class DKConnectIntegration {
         }
 
         String createMessageId = plugin.getSetting(PluginSettingsKey.TICKET_CREATE_MESSAGE_ID).getValue();
-        channel.getMessage(createMessageId).thenAccept(message -> addMessageReactionListener(voiceAdapter, message));
+        channel.getMessage(createMessageId).thenAccept(message -> {
+            if(message == null) initTicketCreateMessage();
+            else addMessageReactionListener(voiceAdapter, message);
+        });
     }
 
     private void addMessageReactionListener(VoiceAdapter voiceAdapter, Message message) {
