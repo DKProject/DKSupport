@@ -19,6 +19,8 @@ public class DKSupportConfig {
 
     public static String PERMISSION_STAFF = "dksupport.staff";
 
+    public static boolean TICKET_USER_AUTOSELECT = true;
+
     public static Collection<TicketTopic> TICKET_TOPICS = Arrays.asList(
             new TicketTopic("1", "Bug report", "\uD83D\uDCDD", "bug", "bugs"),
             new TicketTopic("2", "Question", "❓"),

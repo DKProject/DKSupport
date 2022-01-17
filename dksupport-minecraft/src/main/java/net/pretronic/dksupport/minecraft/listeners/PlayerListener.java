@@ -45,7 +45,11 @@ public class PlayerListener {
                         .add("openTicketCount", dkSupport.getTicketManager().getTickets(TicketState.OPEN).size())
                         .addDescribed("processingTickets", processingTickets));
             }
-            if(dkSupport.getTicketManager().getTicketForCreator(dkSupportPlayer, TicketState.PROCESSING) != null) {
+            Ticket openOrProcessingTicket = dkSupport.getTicketManager().getTicketForCreator(dkSupportPlayer, TicketState.PROCESSING, TicketState.OPEN);
+            if(openOrProcessingTicket != null) {
+                if(DKSupportConfig.TICKET_USER_AUTOSELECT) {
+                    CommandUtil.setSelectedTicket(player, openOrProcessingTicket.getId());
+                }
                 player.sendMessage(Messages.USER_JOIN_INFO);
             }
         }

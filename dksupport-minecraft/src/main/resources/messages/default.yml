@@ -87,5 +87,5 @@ messages:
 
   dksupport.player.staff.joinInfo: '${dksupport.prefix} &7At the moment are &e{openTicketCount} &7tickets open&8. !["&8[&eList&8]"]("run:///ticket list")
   
-  &7Your processing staff tickets @for("ticket" in {processingTickets}, ${dksupport.command.ticket.my.loop},"\n", "\n")'
+  &7Your processing staff tickets: @for("ticket" in {processingTickets}, ${dksupport.command.ticket.my.loop},"\n", "\n")'
   dksupport.player.user.openTicketJoinInfo: '${dksupport.prefix} &7You have one open ticket&8. !["&8[&aSelect&8]"]("run:///ticket select")'

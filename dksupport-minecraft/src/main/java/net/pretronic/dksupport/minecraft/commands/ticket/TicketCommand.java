@@ -63,8 +63,7 @@ public class TicketCommand extends MainCommand implements NotFindable {
         }
 
         DKSupportPlayer player = ((MinecraftPlayer)sender).getAs(DKSupportPlayer.class);
-        if(dkSupport.getTicketManager().getTicketForCreator(player, TicketState.PROCESSING) != null
-                || dkSupport.getTicketManager().getTicketForCreator(player, TicketState.OPEN) != null) {
+        if(dkSupport.getTicketManager().getTicketForCreator(player, TicketState.PROCESSING, TicketState.OPEN) != null) {
             sender.sendMessage(Messages.ERROR_ALREADY_OPEN_TICKET);
             return;
         }
