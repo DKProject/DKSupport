@@ -18,6 +18,8 @@ import org.mcnative.runtime.api.event.player.MinecraftPlayerLogoutEvent;
 import org.mcnative.runtime.api.event.player.login.MinecraftPlayerPostLoginEvent;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
+import java.util.UUID;
+
 public class PlayerListener {
 
     private final DKSupport dkSupport;
@@ -51,9 +53,10 @@ public class PlayerListener {
     public void onChat(MinecraftPlayerChatEvent event) {
         if(event.isCancelled()) return;
         OnlineMinecraftPlayer player = event.getOnlinePlayer();
-        for (Ticket ticket : this.dkSupport.getTicketManager().getTickets(TicketState.OPEN, TicketState.PROCESSING)) {
+        Ticket ticket = CommandUtil.getSelectedTicket(dkSupport, player, false);
+        if(ticket != null) {
             TicketParticipant participant = ticket.getParticipant(player.getUniqueId());
-            if(participant != null && CommandUtil.getSelectedTicket(dkSupport, player, false) != null){
+            if(participant != null) {
                 event.setCancelled(true);
                 if(event.getMessage().equalsIgnoreCase("#leave")) {
                     player.performCommand("ticket unselect");
@@ -64,7 +67,6 @@ public class PlayerListener {
                 } else {
                     ticket.sendMessage(participant, event.getMessage());
                 }
-                break;
             }
         }
     }
