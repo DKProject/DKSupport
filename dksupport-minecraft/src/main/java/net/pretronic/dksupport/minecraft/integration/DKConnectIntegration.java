@@ -21,6 +21,7 @@ import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.minecraft.DKSupportPlugin;
 import net.pretronic.dksupport.minecraft.PluginSettingsKey;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
+import net.pretronic.dksupport.minecraft.config.Messages;
 import net.pretronic.dksupport.minecraft.config.TicketTopic;
 import net.pretronic.libraries.event.Listener;
 import net.pretronic.libraries.message.Textable;
@@ -128,6 +129,10 @@ public class DKConnectIntegration {
                         return;
                     }
                     DKSupportPlayer player = this.dkSupport.getPlayerManager().getPlayer(user.getPlayer().getId());
+                    if(dkSupport.getTicketManager().getTicketForCreator(player, TicketState.PROCESSING, TicketState.OPEN) != null) {
+                        voiceAdapter.sendPrivateMessage(user.getVerification(), voiceAdapter.getMessage("dksupport.ticket.already.open"), VariableSet.create());
+                        return;
+                    }
                     this.dkSupport.getTicketManager().createTicket(player, topic.getDisplayName());
                     break;
                 }
