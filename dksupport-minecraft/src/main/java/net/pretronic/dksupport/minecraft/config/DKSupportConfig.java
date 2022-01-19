@@ -5,6 +5,7 @@ import net.pretronic.libraries.document.annotations.DocumentKey;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public class DKSupportConfig {
 
@@ -21,7 +22,7 @@ public class DKSupportConfig {
 
     public static boolean TICKET_USER_AUTOSELECT = true;
 
-    public static Collection<TicketTopic> TICKET_TOPICS = Arrays.asList(
+    public static List<TicketTopic> TICKET_TOPICS = Arrays.asList(
             new TicketTopic("1", "Bug report", "\uD83D\uDCDD", "bug", "bugs"),
             new TicketTopic("2", "Question", "❓"),
             new TicketTopic("3", "Ask for help", "\uD83D\uDCD1"));
