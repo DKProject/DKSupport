@@ -70,11 +70,11 @@ public class PlayerListener {
             if(participant != null) {
                 event.setCancelled(true);
                 if(event.getMessage().equalsIgnoreCase("#leave")) {
-                    player.performCommand("ticket unselect");
+                    player.performCommand(DKSupportConfig.COMMAND_TICKET.getName()+" unselect");
                 } else if(event.getMessage().equalsIgnoreCase("#close")) {
-                    player.performCommand("ticket close");
+                    player.performCommand(DKSupportConfig.COMMAND_TICKET.getName()+" close");
                 } else if(event.getMessage().equalsIgnoreCase("#history")) {
-                    player.performCommand("ticket history");
+                    player.performCommand(DKSupportConfig.COMMAND_TICKET.getName()+" history");
                 } else {
                     ticket.sendMessage(participant, event.getMessage());
                 }
