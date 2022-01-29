@@ -18,6 +18,9 @@ import org.mcnative.runtime.api.event.player.MinecraftPlayerLogoutEvent;
 import org.mcnative.runtime.api.event.player.login.MinecraftPlayerPostLoginEvent;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
+import java.util.Collection;
+import java.util.UUID;
+
 public class PlayerListener {
 
     private final DKSupport dkSupport;
@@ -30,13 +33,23 @@ public class PlayerListener {
     public void onJoin(MinecraftPlayerPostLoginEvent event){
         OnlineMinecraftPlayer player = event.getOnlinePlayer();
         if(DKSupportConfig.PLAYER_ON_LOGIN_INFO){
+            DKSupportPlayer dkSupportPlayer = player.getAs(DKSupportPlayer.class);
             if(player.hasPermission(DKSupportConfig.PERMISSION_STAFF)) {
+                Collection<Ticket> processingTickets = this.dkSupport.getTicketManager().getTickets(dkSupportPlayer, TicketState.PROCESSING);
+
                 boolean support = event.getPlayer().hasSetting("DKSupport", PlayerSettingsKey.SUPPORT,true);
                 player.sendMessage(Messages.STAFF_STATUS_NOW, VariableSet.create()
                         .add("status",support)
                         .add("statusFormatted", support ? Messages.STAFF_STATUS_LOGIN :  Messages.STAFF_STATUS_LOGOUT));
-                player.sendMessage(Messages.STAFF_JOIN_INFO, VariableSet.create().add("openTicketCount", dkSupport.getTicketManager().getTickets(TicketState.OPEN).size()));
-            } else if(dkSupport.getTicketManager().getTicketForCreator(player.getAs(DKSupportPlayer.class), TicketState.PROCESSING) != null) {
+                player.sendMessage(Messages.STAFF_JOIN_INFO, VariableSet.create()
+                        .add("openTicketCount", dkSupport.getTicketManager().getTickets(TicketState.OPEN).size())
+                        .addDescribed("processingTickets", processingTickets));
+            }
+            Ticket openOrProcessingTicket = dkSupport.getTicketManager().getTicketForCreator(dkSupportPlayer, TicketState.PROCESSING, TicketState.OPEN);
+            if(openOrProcessingTicket != null) {
+                if(DKSupportConfig.TICKET_USER_AUTOSELECT) {
+                    CommandUtil.setSelectedTicket(player, openOrProcessingTicket.getId());
+                }
                 player.sendMessage(Messages.USER_JOIN_INFO);
             }
         }
@@ -51,20 +64,20 @@ public class PlayerListener {
     public void onChat(MinecraftPlayerChatEvent event) {
         if(event.isCancelled()) return;
         OnlineMinecraftPlayer player = event.getOnlinePlayer();
-        for (Ticket ticket : this.dkSupport.getTicketManager().getTickets(TicketState.PROCESSING)) {
+        Ticket ticket = CommandUtil.getSelectedTicket(dkSupport, player, false);
+        if(ticket != null) {
             TicketParticipant participant = ticket.getParticipant(player.getUniqueId());
-            if(participant != null && CommandUtil.getSelectedTicket(dkSupport, player, false) != null){
+            if(participant != null) {
                 event.setCancelled(true);
                 if(event.getMessage().equalsIgnoreCase("#leave")) {
-                    player.performCommand("ticket unselect");
+                    player.performCommand(DKSupportConfig.COMMAND_TICKET.getName()+" unselect");
                 } else if(event.getMessage().equalsIgnoreCase("#close")) {
-                    player.performCommand("ticket close");
+                    player.performCommand(DKSupportConfig.COMMAND_TICKET.getName()+" close");
                 } else if(event.getMessage().equalsIgnoreCase("#history")) {
-                    player.performCommand("ticket history");
+                    player.performCommand(DKSupportConfig.COMMAND_TICKET.getName()+" history");
                 } else {
                     ticket.sendMessage(participant, event.getMessage());
                 }
-                break;
             }
         }
     }

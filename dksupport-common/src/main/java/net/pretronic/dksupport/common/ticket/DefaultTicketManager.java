@@ -15,10 +15,12 @@ import net.pretronic.dksupport.common.event.ticket.DefaultTicketDeleteEvent;
 import net.pretronic.libraries.caching.ArrayCache;
 import net.pretronic.libraries.caching.Cache;
 import net.pretronic.libraries.caching.CacheQuery;
+import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -44,18 +46,18 @@ public class DefaultTicketManager implements TicketManager {
     }
 
     @Override
-    public @NotNull Collection<Ticket> getTickets(@NotNull TicketState state) {
+    public @NotNull Collection<Ticket> getTickets(@NotNull TicketState... states) {
         Collection<Ticket> tickets = new ArrayList<>();
         this.dkSupport.getStorage().getTickets().find()
                 .get("Id")
-                .where("State", state)
+                .whereIn("State", states)
                 .execute().loadIn(tickets, resultEntry -> getTicket(resultEntry.getUniqueId("Id")));
         return tickets;
     }
 
     @Override
-    public Ticket getTicketForCreator(DKSupportPlayer player, TicketState state) {
-        return this.ticketCache.get("byCreatorId", player.getId(), state);
+    public Ticket getTicketForCreator(DKSupportPlayer player, TicketState... states) {
+        return this.ticketCache.get("byCreatorId", player.getId(), states);
     }
 
     @Override
@@ -141,23 +143,23 @@ public class DefaultTicketManager implements TicketManager {
         @Override
         public boolean check(Ticket ticket, Object[] identifiers) {
             UUID id = (UUID) identifiers[0];
-            TicketState state = (TicketState) identifiers[1];
-            return ticket.getCreator().getPlayer().getId().equals(id) && ticket.getState() == state;
+            TicketState[] states = (TicketState[]) identifiers[1];
+            return ticket.getCreator().getPlayer().getId().equals(id) && ticket.getState().is(states);
         }
 
         @Override
         public void validate(Object[] identifiers) {
-            Validate.isTrue(identifiers.length == 2 && identifiers[0] instanceof UUID && identifiers[1] instanceof TicketState);
+            Validate.isTrue(identifiers.length == 2 && identifiers[0] instanceof UUID && identifiers[1] instanceof TicketState[]);
         }
 
         @Override
         public Ticket load(Object[] identifiers) {
             UUID creatorId = (UUID) identifiers[0];
-            TicketState state = (TicketState) identifiers[1];
+            TicketState[] states = (TicketState[]) identifiers[1];
 
             QueryResultEntry resultEntry = dkSupport.getStorage().getTickets().find()
                     .where("CreatorId", creatorId)
-                    .where("State", state)
+                    .whereIn("State", Iterators.map(Arrays.asList(states), Enum::toString))
                     .execute().firstOrNull();
             if(resultEntry == null) return null;
             return new DefaultTicket(dkSupport,
