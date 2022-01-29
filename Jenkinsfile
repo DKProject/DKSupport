@@ -154,30 +154,33 @@ pipeline {
             }
             steps {
                 script {
-                    if(!isGitPathUpdated(MINECRAFT_MESSAGES_DIRECTORY + "default.yml")) return
-                    sshagent([PRETRONIC_CI_SSH_KEY_CREDENTIAL_ID]) {
+                    try {
+                        sshagent([PRETRONIC_CI_SSH_KEY_CREDENTIAL_ID]) {
+                            sh """
+                            if [ -d "translations" ]; then rm -Rf translations; fi
+                            mkdir translations
+
+                            cd translations/
+                            git clone --single-branch --branch main git@github.com:DKProject/Translations.git
+
+                            rm Translations/${PROJECT_NAME}/default.yml
+                            cp ../${MINECRAFT_MESSAGES_DIRECTORY}default.yml Translations/${PROJECT_NAME}/default.yml -r -n
+
+                            cd Translations/
+
+                            git add . -v
+                            git commit -m 'Updated default.yml' -v
+                            git push origin HEAD:main -v
+                            """
+                        }
                         sh """
-                        if [ -d "translations" ]; then rm -Rf translations; fi
-                        mkdir translations
-
-                        cd translations/
-                        git clone --single-branch --branch main git@github.com:DKProject/Translations.git
-
-                        rm Translations/${PROJECT_NAME}/default.yml
-                        cp ../${MINECRAFT_MESSAGES_DIRECTORY}default.yml Translations/${PROJECT_NAME}/default.yml -r -n
-
-                        cd Translations/
-
-                        git add . -v
-                        git commit -m 'Updated default.yml' -v
-                        git push origin HEAD:main -v
+                        rm -Rf translations/
                         """
+                    } catch(err) {
+                        echo err.getMessage();
                     }
-                    sh """
-                    rm -Rf translations/
-                    """
+
                 }
-            }
         }
         stage('Publish javadoc') {
             when { equals expected: false, actual: SKIP }
@@ -194,7 +197,7 @@ pipeline {
                                     responseHandle: 'NONE',
                                     uploadFile: "target/${name}-${VERSION}-javadoc.jar",
                                     customHeaders:[[name:'token', value:"${SECRET}", maskValue:true]],
-                                    url: "https://pretronic.net/javadoc/${JAVADOCS_NAME}/${VERSION}/create")
+                                    url: "https://192.168.1.26:8001/javadoc/${JAVADOCS_NAME}/${VERSION}/create")
                         }
                     }
                 }
