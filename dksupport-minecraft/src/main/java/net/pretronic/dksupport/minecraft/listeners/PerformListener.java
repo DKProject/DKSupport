@@ -9,6 +9,7 @@ import net.pretronic.dksupport.api.ticket.TicketParticipant;
 import net.pretronic.dksupport.api.ticket.TicketState;
 import net.pretronic.dksupport.minecraft.DKSupportPlugin;
 import net.pretronic.dksupport.minecraft.PlayerSettingsKey;
+import net.pretronic.dksupport.minecraft.commands.CommandUtil;
 import net.pretronic.dksupport.minecraft.config.DKSupportConfig;
 import net.pretronic.dksupport.minecraft.config.Messages;
 import net.pretronic.dksupport.minecraft.integration.DKConnectIntegration;
@@ -35,6 +36,9 @@ public class PerformListener {
     public void onTicketCreate(TicketCreatedEvent event) {
         Ticket ticket = event.getTicket();
         if(ticket.getState() == TicketState.OPEN) {
+            MinecraftPlayer creator = McNative.getInstance().getPlayerManager().getPlayer(event.getTicket().getCreator().getPlayer().getId());
+            CommandUtil.setSelectedTicket(creator, ticket.getId());
+
             VariableSet variables = VariableSet.create().addDescribed("ticket", event.getTicket());
             for (ConnectedMinecraftPlayer player : McNative.getInstance().getLocal().getConnectedPlayers()) {
                 if(player.hasSetting("DKSupport", PlayerSettingsKey.SUPPORT,true)) {

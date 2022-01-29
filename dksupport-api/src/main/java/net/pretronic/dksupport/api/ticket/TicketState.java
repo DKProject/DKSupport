@@ -8,6 +8,15 @@ public enum TicketState {
     PROCESSING(),
     CLOSED();
 
+    public boolean is(TicketState... states) {
+        if(states != null) {
+            for (TicketState state : states) {
+                if(state == this) return true;
+            }
+        }
+        return false;
+    }
+
     public static TicketState parseSilent(String value) {
         for (TicketState ticketState : values()) {
             if(ticketState.name().equalsIgnoreCase(value)) return ticketState;
